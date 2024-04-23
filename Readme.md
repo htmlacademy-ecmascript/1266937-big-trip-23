@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Ангелина Носова](https://up.htmlacademy.ru/ecmascript/23/user/1266937).
-* Наставник: `Неизвестно`.
+* Наставник: [Yulia Volkova](https://htmlacademy.ru/profile/julie_volkova).
 
 ---
 
