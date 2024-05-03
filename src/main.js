@@ -4,6 +4,7 @@ import FilterView from './view/filter-view.js';
 import SortingView from './view/sorting-view.js';
 import PointListView from './view/point-list-view.js';
 import PointView from './view/point-view.js';
+import PointFormView from './view/point-form-view.js';
 
 const tripMainElement = document.querySelector('.trip-main');
 const filterControlsElement = document.querySelector('.trip-controls__filters');
@@ -17,6 +18,7 @@ const renderPointList = (pointListContainer) => {
   const pointListComponent = new PointListView();
 
   render(pointListComponent, pointListContainer);
+  render(new PointFormView, pointListComponent.getElement());
   render(new PointView(), pointListComponent.getElement());
 };
 
