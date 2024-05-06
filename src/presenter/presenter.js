@@ -5,6 +5,11 @@ import PointListView from '../view/point-list-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointView from '../view/point-view.js';
 import {render, RenderPosition} from '../render.js';
+import {generateMockPoint} from '../mock/point.js';
+
+const POINT_COUNT = 3;
+
+const points = new Array(POINT_COUNT).fill().map(generateMockPoint);
 
 export default class Presenter {
   pointListComponent = new PointListView();
@@ -26,7 +31,7 @@ export default class Presenter {
     render(new PointFormView(), this.pointListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.pointListComponent.getElement());
+      render(new PointView(points[i]), this.pointListComponent.getElement());
     }
   }
 }
