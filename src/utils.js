@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 // mock
 export const getRandomArrayElement = (items) => (
   items[Math.floor(Math.random() * items.length)]
@@ -13,11 +15,25 @@ export const getRandomStartTimestamp = () => {
   const start = new Date();
   const end = new Date(2024, 9);
 
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())); // elapsed time in milliseconds
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
 export const getRandomEndTimestamp = (start) => {
-  const end = new Date(start.getTime() + (5 * 24 * 60 * 1000));
+  const MAX_DURATION_IN_MINS = 7;
+  const HOURS_IN_DAY = 24;
+  const MINS_IN_HOUR = 60;
+
+  const end = new Date(start.getTime() + (MAX_DURATION_IN_MINS * HOURS_IN_DAY * MINS_IN_HOUR * 1000));
 
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+};
+
+export const humanizeEventDate = (date, format) => date ? dayjs(date).format(format) : '';
+
+export const getDuration = (start, end) => {
+  const eventDuration = dayjs(end).diff(dayjs(start));
+  const formattedDuration = dayjs.duration(eventDuration, 'ms')
+    .format('DD[d] HH[h] mm[m]');
+
+  return formattedDuration;
 };

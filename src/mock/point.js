@@ -29,9 +29,9 @@ export const generateMockPoint = () => {
   const startTime = getRandomStartTimestamp();
 
   return {
-    startTime: startTime,
+    startTime: startTime.toISOString(),
     type: getRandomArrayElement(pointTypes),
-    endTime: (getRandomEndTimestamp(startTime)),
+    endTime: (getRandomEndTimestamp(startTime)).toISOString(),
     destination: getRandomArrayElement(destinationCities),
     isFavorite: getRandomBoolean(),
     price: 20,
