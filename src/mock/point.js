@@ -1,4 +1,12 @@
-import {getRandomArrayElement, getRandomStartTimestamp, getRandomEndTimestamp, getRandomBoolean} from '../utils';
+import {
+  getRandomArrayElement,
+  getRandomStartTimestamp,
+  getRandomEndTimestamp,
+  getRandomBoolean,
+  getRandomIntInclusive,
+  getRandomArrayElements,
+} from '../utils';
+import {offers} from './offers';
 
 const pointTypes = [
   'taxi',
@@ -27,13 +35,17 @@ const destinationCities = [
 
 export const generateMockPoint = () => {
   const startTime = getRandomStartTimestamp();
+  const type = getRandomArrayElement(pointTypes);
+  const activeOffers = offers.filter((offer) => offer.type === type);
 
   return {
+    id: crypto.randomUUID(),
     startTime: startTime.toISOString(),
-    type: getRandomArrayElement(pointTypes),
+    type: type,
     endTime: (getRandomEndTimestamp(startTime)).toISOString(),
     destination: getRandomArrayElement(destinationCities),
     isFavorite: getRandomBoolean(),
-    price: 20,
+    price: getRandomIntInclusive(50, 1300),
+    offers: getRandomArrayElements(activeOffers),
   };
 };

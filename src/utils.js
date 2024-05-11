@@ -14,6 +14,13 @@ export const getRandomInteger = (max) => (
 
 export const getRandomBoolean = () => Math.random() >= 0.5;
 
+export const getRandomIntInclusive = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 export const getRandomStartTimestamp = () => {
   const start = new Date();
   const end = new Date(2024, 9);
@@ -40,3 +47,10 @@ export const getDuration = (start, end) => {
 
   return formattedDuration;
 };
+
+const getRandomArrayLength = (array) => Math.floor(Math.random() * array.length);
+
+export const getRandomArrayElements = (array) => (
+  [...new Set(Array.from({length: getRandomArrayLength(array) + 1},
+    () => array[getRandomArrayLength(array)]))]
+);

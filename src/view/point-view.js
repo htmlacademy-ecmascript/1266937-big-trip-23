@@ -3,7 +3,16 @@ import {humanizeEventDate, getDuration} from '../utils.js';
 import {DATE_FORMAT, TIME_FORMAT} from '../constants.js';
 
 const createPointViewTemplate = (point) => {
-  const {type, destination, startTime, endTime, isFavorite, price} = point;
+  const {type, destination, startTime, endTime, isFavorite, price, offers} = point;
+
+  // selected offers
+  const createOfferListTemplate = offers.map((offer) => (
+    `${offer ? `<li class="event__offer">
+      <span class="event__offer-title">${offer.offers.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.offers.price}</span>
+    </li>` : ''}`)).join('');
+
 
   return `< li class="trip-events__item" >
         <div class="event">
@@ -25,11 +34,7 @@ const createPointViewTemplate = (point) => {
           </p>
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
-            <li class="event__offer">
-              <span class="event__offer-title">Order Uber</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">20</span>
-            </li>
+            ${createOfferListTemplate}
           </ul>
           <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
             <span class="visually-hidden">Add to favorite</span>
