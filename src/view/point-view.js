@@ -1,10 +1,6 @@
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 import {createElement} from '../render.js';
 import {humanizeEventDate, getDuration} from '../utils.js';
 import {DATE_FORMAT, TIME_FORMAT} from '../constants.js';
-
-dayjs.extend(duration);
 
 const createPointViewTemplate = (point) => {
   const {type, destination, startTime, endTime, isFavorite, price} = point;
@@ -49,7 +45,7 @@ const createPointViewTemplate = (point) => {
 };
 
 export default class PointView {
-  constructor(point) {
+  constructor({point}) {
     this.point = point;
   }
 

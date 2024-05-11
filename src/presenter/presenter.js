@@ -5,23 +5,22 @@ import PointListView from '../view/point-list-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointView from '../view/point-view.js';
 import {render, RenderPosition} from '../render.js';
-import {generateMockPoint} from '../mock/point.js';
-
-const POINT_COUNT = 3;
-
-const points = new Array(POINT_COUNT).fill().map(generateMockPoint);
 
 export default class Presenter {
   pointListComponent = new PointListView();
 
-  constructor({tripInfoContainer, filterContainer, sortingContainer, pointListContainer}) {
+  constructor({tripInfoContainer, filterContainer, sortingContainer, pointListContainer, pointsModel}) {
     this.tripInfoContainer = tripInfoContainer;
     this.filterContainer = filterContainer;
     this.sortingContainer = sortingContainer;
     this.pointListContainer = pointListContainer;
+
+    this.pointsModel = pointsModel;
   }
 
   init() {
+    this.points = [...this.pointsModel.getPoints()];
+
     render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.filterContainer);
     render(new SortingView(), this.sortingContainer);
@@ -30,8 +29,8 @@ export default class Presenter {
 
     render(new PointFormView(), this.pointListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(points[i]), this.pointListComponent.getElement());
+    for (let i = 0; i < this.points.length; i++) {
+      render(new PointView({point: this.points[i]}), this.pointListComponent.getElement());
     }
   }
 }
