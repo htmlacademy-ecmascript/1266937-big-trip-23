@@ -38,6 +38,14 @@ export const getRandomEndTimestamp = (start) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+const getRandomArrayLength = (array) => Math.floor(Math.random() * array.length);
+
+export const getRandomArrayElements = (array) => (
+  [...new Set(Array.from({length: getRandomArrayLength(array) + 1},
+    () => array[getRandomArrayLength(array)]))]
+);
+
+
 export const humanizeEventDate = (date, format) => date ? dayjs(date).format(format) : '';
 
 export const getDuration = (start, end) => {
@@ -48,9 +56,10 @@ export const getDuration = (start, end) => {
   return formattedDuration;
 };
 
-const getRandomArrayLength = (array) => Math.floor(Math.random() * array.length);
+export const capitalizeFirstLetter = (string) => (
+  string[0].toUpperCase() + string.slice(1)
+);
 
-export const getRandomArrayElements = (array) => (
-  [...new Set(Array.from({length: getRandomArrayLength(array) + 1},
-    () => array[getRandomArrayLength(array)]))]
+export const getLastCharacterOfString = (string) => (
+  string.trim().split(' ').slice(-1)
 );

@@ -3,7 +3,7 @@ import {humanizeEventDate, getDuration} from '../utils.js';
 import {DATE_FORMAT, TIME_FORMAT} from '../constants.js';
 
 const createPointViewTemplate = (point) => {
-  const {type, destination, startTime, endTime, isFavorite, price, offers} = point;
+  const {type, startTime, endTime, isFavorite, price, offers, destination} = point;
 
   // selected offers
   const createOfferListTemplate = offers.map((offer) => (
@@ -20,7 +20,7 @@ const createPointViewTemplate = (point) => {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${type} ${destination}</h3>
+          <h3 class="event__title">${type} ${destination.city}</h3>
           <div class="event__schedule">
             <p class="event__time">
               <time class="event__start-time" datetime=${startTime}>${humanizeEventDate(startTime, TIME_FORMAT)}</time>

@@ -20,6 +20,8 @@ export default class Presenter {
 
   init() {
     this.points = [...this.pointsModel.getPoints()];
+    this.destinations = [...this.pointsModel.getDestinations()];
+    this.offers = [...this.pointsModel.getOffers()];
 
     render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.filterContainer);
@@ -27,9 +29,9 @@ export default class Presenter {
 
     render(this.pointListComponent, this.pointListContainer);
 
-    render(new PointFormView(), this.pointListComponent.getElement());
+    render(new PointFormView({point: this.points[0], destinations: this.destinations, offers: this.offers}), this.pointListComponent.getElement());
 
-    for (let i = 0; i < this.points.length; i++) {
+    for (let i = 1; i < this.points.length; i++) {
       render(new PointView({point: this.points[i]}), this.pointListComponent.getElement());
     }
   }
