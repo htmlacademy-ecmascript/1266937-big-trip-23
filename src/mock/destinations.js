@@ -31,14 +31,28 @@ export const generateMockDestination = () => (
   {
     id: crypto.randomUUID(),
     city: getRandomArrayElement(destinationCities),
-    description: getRandomArrayElements(descriptionItems),
+    description: getRandomArrayElements(descriptionItems).join(' '),
     pictures: [
       {
-        src: `https://loremflickr.com/248/152?random=${5}`,
-        description: 'Chamonix parliament building'
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${Math.random()}`,
+        description: 'Chamonix parliament building',
       }
     ]
   }
 );
-
-// const description = new Array(getRandomIntInclusive(1, 5)).fill().map(generateRandomDescription).join(` `);
