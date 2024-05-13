@@ -28,10 +28,12 @@ export const getRandomStartTimestamp = () => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+const HOURS_IN_DAY = 24;
+const MINS_IN_HOUR = 60;
+const SECONDS_IN_MIN = 60;
+
 export const getRandomEndTimestamp = (start) => {
   const MAX_DURATION_IN_MINS = 7;
-  const HOURS_IN_DAY = 24;
-  const MINS_IN_HOUR = 60;
 
   const end = new Date(start.getTime() + (MAX_DURATION_IN_MINS * HOURS_IN_DAY * MINS_IN_HOUR * 1000));
 
@@ -50,8 +52,22 @@ export const humanizeEventDate = (date, format) => date ? dayjs(date).format(for
 
 export const getDuration = (start, end) => {
   const eventDuration = dayjs(end).diff(dayjs(start));
-  const formattedDuration = dayjs.duration(eventDuration, 'ms')
-    .format('DD[d] HH[h] mm[m]');
+  let formattedDuration;
+
+  if (eventDuration > HOURS_IN_DAY * MINS_IN_HOUR * SECONDS_IN_MIN * 1000) {
+    formattedDuration = dayjs.duration(eventDuration, 'ms')
+      .format('DD[d] HH[h] mm[m]');
+  }
+
+  if (eventDuration < HOURS_IN_DAY * MINS_IN_HOUR * SECONDS_IN_MIN * 1000) {
+    formattedDuration = dayjs.duration(eventDuration, 'ms')
+      .format('HH[h] mm[m]');
+  }
+
+  if (eventDuration < MINS_IN_HOUR * SECONDS_IN_MIN * 1000) {
+    formattedDuration = dayjs.duration(eventDuration, 'ms')
+      .format('mm[m]');
+  }
 
   return formattedDuration;
 };

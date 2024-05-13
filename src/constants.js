@@ -5,8 +5,11 @@ export const FilterValue = {
   PAST: 'past',
 };
 
-export const DATE_FORMAT = 'MMM DD';
-export const TIME_FORMAT = 'HH:mm';
+export const TimeFormatDisplay = {
+  DATE_FORMAT: 'MMM DD',
+  TIME_FORMAT: 'HH:mm',
+  DATE_TIME_FORMAT: 'DD/MM/YY hh:mm',
+};
 
 export const POINT_TYPES = [
   'taxi',

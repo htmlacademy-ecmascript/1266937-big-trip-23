@@ -1,6 +1,6 @@
 import {createElement} from '../render.js';
 import {humanizeEventDate, getDuration} from '../utils.js';
-import {DATE_FORMAT, TIME_FORMAT} from '../constants.js';
+import {TimeFormatDisplay} from '../constants.js';
 
 const createPointViewTemplate = (point) => {
   const {type, startTime, endTime, isFavorite, price, offers, destination} = point;
@@ -16,16 +16,16 @@ const createPointViewTemplate = (point) => {
 
   return `< li class="trip-events__item" >
         <div class="event">
-          <time class="event__date" datetime=${startTime}>${humanizeEventDate(startTime, DATE_FORMAT)}</time>
+          <time class="event__date" datetime=${startTime}>${humanizeEventDate(startTime, TimeFormatDisplay.DATE_FORMAT)}</time>
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
           <h3 class="event__title">${type} ${destination.city}</h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime=${startTime}>${humanizeEventDate(startTime, TIME_FORMAT)}</time>
+              <time class="event__start-time" datetime=${startTime}>${humanizeEventDate(startTime, TimeFormatDisplay.TIME_FORMAT)}</time>
               &mdash;
-              <time class="event__end-time" datetime=${endTime}>${humanizeEventDate(endTime, TIME_FORMAT)}</time>
+              <time class="event__end-time" datetime=${endTime}>${humanizeEventDate(endTime, TimeFormatDisplay.TIME_FORMAT)}</time>
             </p>
             <p class="event__duration">${getDuration(startTime, endTime)}</p>
           </div>
