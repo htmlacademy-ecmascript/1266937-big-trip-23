@@ -31,12 +31,12 @@ const createOfferListTemplate = (offers) => (
 );
 
 const createOfferSectionTemplate = (offers) => (
-  `<section class="event__section  event__section--offers">
+  `${offers.length > 0 ? `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
       ${createOfferListTemplate(offers)}
     </div>
-  </section>`
+  </section>` : ''}`
 );
 
 const createPictureListTemplate = (pictures) => (
@@ -46,7 +46,7 @@ const createPictureListTemplate = (pictures) => (
 );
 
 const createDestinationSectionTemplate = (description, pictures) => (
-  `<section class="event__section  event__section--destination">
+  `${description.length > 0 ? `<section class="event__section  event__section--destination">
   <h3 class="event__section-title  event__section-title--destination">Destination</h3>
   <p class="event__destination-description">${description}</p>
 
@@ -55,7 +55,7 @@ const createDestinationSectionTemplate = (description, pictures) => (
       ${createPictureListTemplate(pictures)}
     </div>
   </div>
-</section>`
+</section>` : ''}`
 );
 
 const createPointFormTemplate = (point, destinations, offers) => {
@@ -64,7 +64,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
   const activeOffers = offers.filter((offer) => offer.type === type);
 
-  return `<li class="trip-events__item">
+  return `< li class="trip-events__item" >
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -74,14 +74,14 @@ const createPointFormTemplate = (point, destinations, offers) => {
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-        <div class="event__type-list">
-          <fieldset class="event__type-group">
-            <legend class="visually-hidden">Event type</legend>
+          <div class="event__type-list">
+            <fieldset class="event__type-group">
+              <legend class="visually-hidden">Event type</legend>
 
-            ${createPointTypeListTemplate(POINT_TYPES, type)}
+              ${createPointTypeListTemplate(POINT_TYPES, type)}
 
-          </fieldset>
-        </div>
+            </fieldset>
+          </div>
       </div>
 
       <div class="event__field-group  event__field-group--destination">
@@ -89,46 +89,46 @@ const createPointFormTemplate = (point, destinations, offers) => {
           ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.city} list="destination-list-1">
-        <datalist id="destination-list-1">
+          <datalist id="destination-list-1">
 
-          ${createCityListTemplate(destinations)}
+            ${createCityListTemplate(destinations)}
 
-        </datalist>
+          </datalist>
       </div>
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
         <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(startTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
-        &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
-      </div>
+          &mdash;
+          <label class="visually-hidden" for="event-end-time-1">To</label>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
+          </div>
 
-      <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
-          <span class="visually-hidden">Price</span>
-          &euro;
-        </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
-      </div>
+          <div class="event__field-group  event__field-group--price">
+            <label class="event__label" for="event-price-1">
+              <span class="visually-hidden">Price</span>
+              &euro;
+            </label>
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
 
-      <!--add-new-point-form-->
-      <!--<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>-->
-      <!--<button class="event__reset-btn" type="reset">Cancel</button>-->
+          <!--add-new-point-form-->
+          <!--<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>-->
+          <!--<button class="event__reset-btn" type="reset">Cancel</button>-->
 
-    </header>
-    <section class="event__details">
-      ${createOfferSectionTemplate(activeOffers)}
-      ${createDestinationSectionTemplate(description, pictures)}
-    </section>
-  </form>
-</li>`;
+        </header>
+        <section class="event__details">
+          ${createOfferSectionTemplate(activeOffers)}
+          ${createDestinationSectionTemplate(description, pictures)}
+        </section>
+      </form>
+    </li>`;
 };
 
 export default class PointFormView {
