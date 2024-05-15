@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeEventDate, getDuration} from '../utils.js';
 import {TimeFormatDisplay} from '../constants.js';
 
@@ -49,24 +49,13 @@ const createPointViewTemplate = (point) => {
   </li > `;
 };
 
-export default class PointView {
+export default class PointView extends AbstractView {
   constructor({point}) {
+    super();
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createPointViewTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -4,7 +4,7 @@ import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointView from '../view/point-view.js';
-import {render, RenderPosition} from '../render.js';
+import {render, RenderPosition} from '../framework/render.js';
 
 export default class Presenter {
   pointListComponent = new PointListView();
@@ -29,10 +29,10 @@ export default class Presenter {
 
     render(this.pointListComponent, this.pointListContainer);
 
-    render(new PointFormView({point: this.points[0], destinations: this.destinations, offers: this.offers}), this.pointListComponent.getElement());
+    render(new PointFormView({point: this.points[0], destinations: this.destinations, offers: this.offers}), this.pointListComponent.element);
 
     for (let i = 1; i < this.points.length; i++) {
-      render(new PointView({point: this.points[i]}), this.pointListComponent.getElement());
+      render(new PointView({point: this.points[i]}), this.pointListComponent.element);
     }
   }
 }
