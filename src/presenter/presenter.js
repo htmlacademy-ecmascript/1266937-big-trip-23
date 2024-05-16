@@ -7,32 +7,42 @@ import PointView from '../view/point-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 
 export default class Presenter {
-  pointListComponent = new PointListView();
+  #tripInfoContainer = null;
+  #filterContainer = null;
+  #sortingContainer = null;
+  #pointListContainer = null;
+  #pointsModel = null;
+
+  #pointListComponent = new PointListView();
+
+  #points = [];
+  #destinations = [];
+  #offers = [];
 
   constructor({tripInfoContainer, filterContainer, sortingContainer, pointListContainer, pointsModel}) {
-    this.tripInfoContainer = tripInfoContainer;
-    this.filterContainer = filterContainer;
-    this.sortingContainer = sortingContainer;
-    this.pointListContainer = pointListContainer;
+    this.#tripInfoContainer = tripInfoContainer;
+    this.#filterContainer = filterContainer;
+    this.#sortingContainer = sortingContainer;
+    this.#pointListContainer = pointListContainer;
 
-    this.pointsModel = pointsModel;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.points = [...this.pointsModel.getPoints()];
-    this.destinations = [...this.pointsModel.getDestinations()];
-    this.offers = [...this.pointsModel.getOffers()];
+    this.#points = [...this.#pointsModel.points];
+    this.#destinations = [...this.#pointsModel.destinations];
+    this.#offers = [...this.#pointsModel.offers];
 
-    render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
-    render(new FilterView(), this.filterContainer);
-    render(new SortingView(), this.sortingContainer);
+    render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+    render(new FilterView(), this.#filterContainer);
+    render(new SortingView(), this.#sortingContainer);
 
-    render(this.pointListComponent, this.pointListContainer);
+    render(this.#pointListComponent, this.#pointListContainer);
 
-    render(new PointFormView({point: this.points[0], destinations: this.destinations, offers: this.offers}), this.pointListComponent.element);
+    render(new PointFormView({point: this.#points[0], destinations: this.#destinations, offers: this.#offers}), this.#pointListComponent.element);
 
-    for (let i = 1; i < this.points.length; i++) {
-      render(new PointView({point: this.points[i]}), this.pointListComponent.element);
+    for (let i = 1; i < this.#points.length; i++) {
+      render(new PointView({point: this.#points[i]}), this.#pointListComponent.element);
     }
   }
 }
