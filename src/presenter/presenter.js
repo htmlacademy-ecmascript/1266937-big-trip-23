@@ -45,17 +45,34 @@ export default class Presenter {
   }
 
   #renderPoint(point, destinations, offers) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const pointComponent = new PointView({
       point,
-      onArrowDownClick: () => (replacePointToEditForm())
+      onArrowDownClick: () => {
+        replacePointToEditForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
     });
 
     const pointEditFormComponent = new PointFormView({
       point,
       destinations,
       offers,
-      onArrowUpClick: () => (replaceEditFormToPoint()),
-      onEditFormSubmit: () => (replaceEditFormToPoint())
+      onArrowUpClick: () => {
+        replaceEditFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onEditFormSubmit: () => {
+        replaceEditFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
     });
 
     function replacePointToEditForm() {
