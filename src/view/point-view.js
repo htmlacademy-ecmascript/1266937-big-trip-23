@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeEventDate, getDuration} from '../utils.js';
 import {TimeFormatDisplay} from '../constants.js';
 
@@ -49,24 +49,25 @@ const createPointViewTemplate = (point) => {
   </li > `;
 };
 
-export default class PointView {
-  constructor({point}) {
-    this.point = point;
+export default class PointView extends AbstractView {
+  #point = null;
+  #handleArrowDownClick = null;
+
+  constructor({point, onArrowDownClick}) {
+    super();
+    this.#point = point;
+    this.#handleArrowDownClick = onArrowDownClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#arrowDownClickHandler);
   }
 
-  getTemplate() {
-    return createPointViewTemplate(this.point);
+  get template() {
+    return createPointViewTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #arrowDownClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleArrowDownClick();
+  };
 }
