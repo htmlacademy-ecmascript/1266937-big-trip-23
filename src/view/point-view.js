@@ -51,13 +51,23 @@ const createPointViewTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #handleArrowDownClick = null;
 
-  constructor({point}) {
+  constructor({point, onArrowDownClick}) {
     super();
     this.#point = point;
+    this.#handleArrowDownClick = onArrowDownClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#arrowDownClickHandler);
   }
 
   get template() {
     return createPointViewTemplate(this.#point);
   }
+
+  #arrowDownClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleArrowDownClick();
+  };
 }

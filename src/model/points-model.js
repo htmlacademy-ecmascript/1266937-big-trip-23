@@ -2,7 +2,7 @@ import {generateMockDestination} from '../mock/destinations';
 import {generateMockPoint} from '../mock/point';
 import {offers} from '../mock/offers';
 
-const POINT_COUNT = 4;
+const POINT_COUNT = 10;
 const DESTINATION_COUNT = 9;
 
 export default class PointsModel {

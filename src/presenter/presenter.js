@@ -4,7 +4,7 @@ import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointFormView from '../view/point-form-view.js';
 import PointView from '../view/point-view.js';
-import {render, RenderPosition} from '../framework/render.js';
+import {render, RenderPosition, replace} from '../framework/render.js';
 
 export default class Presenter {
   #tripInfoContainer = null;
@@ -39,10 +39,33 @@ export default class Presenter {
 
     render(this.#pointListComponent, this.#pointListContainer);
 
-    render(new PointFormView({point: this.#points[0], destinations: this.#destinations, offers: this.#offers}), this.#pointListComponent.element);
-
-    for (let i = 1; i < this.#points.length; i++) {
-      render(new PointView({point: this.#points[i]}), this.#pointListComponent.element);
+    for (let i = 0; i < this.#points.length; i++) {
+      this.#renderPoint(this.#points[i], this.#destinations, this.#offers);
     }
+  }
+
+  #renderPoint(point, destinations, offers) {
+    const pointComponent = new PointView({
+      point,
+      onArrowDownClick: () => (replacePointToEditForm())
+    });
+
+    const pointEditFormComponent = new PointFormView({
+      point,
+      destinations,
+      offers,
+      onArrowUpClick: () => (replaceEditFormToPoint()),
+      onEditFormSubmit: () => (replaceEditFormToPoint())
+    });
+
+    function replacePointToEditForm() {
+      replace(pointEditFormComponent, pointComponent);
+    }
+
+    function replaceEditFormToPoint() {
+      replace(pointComponent, pointEditFormComponent);
+    }
+
+    render(pointComponent, this.#pointListComponent.element);
   }
 }
