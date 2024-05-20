@@ -2,15 +2,13 @@ import TripInfoView from '../view/trip-info-view';
 import FilterView from '../view/filter-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
-import PointFormView from '../view/point-form-view.js';
-import PointView from '../view/point-view.js';
-import {render, RenderPosition, replace} from '../framework/render.js';
+import {render, RenderPosition} from '../framework/render.js';
+import PointPresenter from './point-presenter.js';
 
 export default class Presenter {
   #tripInfoContainer = null;
   #filterContainer = null;
-  #sortingContainer = null;
-  #pointListContainer = null;
+  #tripEventsContainer = null;
   #pointsModel = null;
 
   #pointListComponent = new PointListView();
@@ -19,11 +17,10 @@ export default class Presenter {
   #destinations = [];
   #offers = [];
 
-  constructor({tripInfoContainer, filterContainer, sortingContainer, pointListContainer, pointsModel}) {
+  constructor({tripInfoContainer, filterContainer, tripEventsContainer, pointsModel}) {
     this.#tripInfoContainer = tripInfoContainer;
     this.#filterContainer = filterContainer;
-    this.#sortingContainer = sortingContainer;
-    this.#pointListContainer = pointListContainer;
+    this.#tripEventsContainer = tripEventsContainer;
 
     this.#pointsModel = pointsModel;
   }
@@ -35,9 +32,9 @@ export default class Presenter {
 
     render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.#filterContainer);
-    render(new SortingView(), this.#sortingContainer);
+    render(new SortingView(), this.#tripEventsContainer);
 
-    render(this.#pointListComponent, this.#pointListContainer);
+    render(this.#pointListComponent, this.#tripEventsContainer);
 
     for (let i = 0; i < this.#points.length; i++) {
       this.#renderPoint(this.#points[i], this.#destinations, this.#offers);
@@ -45,44 +42,10 @@ export default class Presenter {
   }
 
   #renderPoint(point, destinations, offers) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      point,
-      onArrowDownClick: () => {
-        replacePointToEditForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
+    const pointPresenter = new PointPresenter({
+      pointListContainer: this.#pointListComponent.element
     });
 
-    const pointEditFormComponent = new PointFormView({
-      point,
-      destinations,
-      offers,
-      onArrowUpClick: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onEditFormSubmit: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    function replacePointToEditForm() {
-      replace(pointEditFormComponent, pointComponent);
-    }
-
-    function replaceEditFormToPoint() {
-      replace(pointComponent, pointEditFormComponent);
-    }
-
-    render(pointComponent, this.#pointListComponent.element);
+    pointPresenter.init(point, destinations, offers);
   }
 }

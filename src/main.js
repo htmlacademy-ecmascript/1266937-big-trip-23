@@ -10,8 +10,7 @@ const pointsModel = new PointsModel();
 const presenter = new Presenter({
   tripInfoContainer: tripMainElement,
   filterContainer: filterControlsElement,
-  sortingContainer: tripEventsElement,
-  pointListContainer: tripEventsElement,
+  tripEventsContainer: tripEventsElement,
   pointsModel,
 });
 
