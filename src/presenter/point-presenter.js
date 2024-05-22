@@ -1,4 +1,4 @@
-import {render, replace} from '../framework/render';
+import {render, replace, remove} from '../framework/render';
 import PointView from '../view/point-view';
 import PointFormView from '../view/point-form-view';
 
@@ -11,9 +11,11 @@ export default class PointPresenter {
   #point = null;
   #offers = [];
   #destinations = [];
+  #handlePointChange = null;
 
-  constructor({pointListContainer}) {
+  constructor({pointListContainer, onDataChange}) {
     this.#pointListContainer = pointListContainer;
+    this.#handlePointChange = onDataChange;
   }
 
   init(point, destinations, offers) {
@@ -21,9 +23,13 @@ export default class PointPresenter {
     this.#offers = offers;
     this.#destinations = destinations;
 
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditFormComponent = this.#pointEditFormComponent;
+
     this.#pointComponent = new PointView({
       point: this.#point,
       onArrowDownClick: this.#handleArrowDownClick,
+      onFavoriteButtonClick: this.#handleFavoriteButtonClick
     });
 
     this.#pointEditFormComponent = new PointFormView({
@@ -34,7 +40,21 @@ export default class PointPresenter {
       onEditFormSubmit: this.#handleEditFormSubmit,
     });
 
-    render(this.#pointComponent, this.#pointListContainer);
+    if (prevPointComponent === null || prevPointEditFormComponent === null) {
+      render(this.#pointComponent, this.#pointListContainer);
+      return;
+    }
+
+    if (this.#pointListContainer.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#pointListContainer.contains(prevPointEditFormComponent.element)) {
+      replace(this.#pointEditFormComponent, prevPointEditFormComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditFormComponent);
   }
 
   #escKeyDownHandler = (evt) => {
@@ -62,7 +82,15 @@ export default class PointPresenter {
     this.#replaceEditFormToPoint();
   };
 
-  #handleEditFormSubmit = () => {
+  #handleEditFormSubmit = (point) => {
+    this.#handlePointChange(point);
     this.#replaceEditFormToPoint();
+  };
+
+  #handleFavoriteButtonClick = () => {
+    this.#handlePointChange({
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite
+    });
   };
 }

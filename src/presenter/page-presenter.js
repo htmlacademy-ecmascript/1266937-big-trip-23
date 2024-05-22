@@ -45,7 +45,8 @@ export default class PagePresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id)
+      .init(updatedPoint, this.#destinations, this.#offers);
   };
 
   #renderPoint(point, destinations, offers) {
