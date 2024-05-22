@@ -1,11 +1,12 @@
-import TripInfoView from '../view/trip-info-view';
+import TripInfoView from '../view/trip-info-view.js';
 import FilterView from '../view/filter-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
+import {updateItem} from '../utils/common.js';
 
-export default class Presenter {
+export default class PagePresenter {
   #tripInfoContainer = null;
   #filterContainer = null;
   #tripEventsContainer = null;
@@ -16,6 +17,7 @@ export default class Presenter {
   #points = [];
   #destinations = [];
   #offers = [];
+  #pointPresenters = new Map();
 
   constructor({tripInfoContainer, filterContainer, tripEventsContainer, pointsModel}) {
     this.#tripInfoContainer = tripInfoContainer;
@@ -41,11 +43,18 @@ export default class Presenter {
     }
   }
 
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
   #renderPoint(point, destinations, offers) {
     const pointPresenter = new PointPresenter({
-      pointListContainer: this.#pointListComponent.element
+      pointListContainer: this.#pointListComponent.element,
+      onDataChange: this.#handlePointChange
     });
 
     pointPresenter.init(point, destinations, offers);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 }
