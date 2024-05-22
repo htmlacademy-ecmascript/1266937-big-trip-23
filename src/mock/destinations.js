@@ -1,4 +1,4 @@
-import {getRandomArrayElement, getRandomArrayElements} from '../utils';
+import {getRandomArrayElement, getRandomArrayElements} from '../utils/point';
 
 const destinationCities = [
   'Amsterdam',

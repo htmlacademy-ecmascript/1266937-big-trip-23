@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {POINT_TYPES, TimeFormatDisplay} from '../constants.js';
-import {capitalizeFirstLetter, getLastCharacterOfString, humanizeEventDate} from '../utils.js';
+import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.js';
+import {humanizeEventDate} from '../utils/point.js';
 
 const createPointTypeListTemplate = (types, activeType) => (
   types.map((type) => (
@@ -59,49 +60,46 @@ const createDestinationSectionTemplate = (description, pictures) => (
 );
 
 const createPointFormTemplate = (point, destinations, offers) => {
-  const {type, startTime, endTime, destination} = point;
+  const {type, startTime, endTime, destination, price} = point;
   const {description, pictures} = destination;
 
   const activeOffers = offers.filter((offer) => offer.type === type);
 
-  return `< li class="trip-events__item" >
-  <form class="event event--edit" action="#" method="post">
-    <header class="event__header">
-      <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
-          <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-        </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+  return (
+    `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          <div class="event__type-wrapper">
+            <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <span class="visually-hidden">Choose event type</span>
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+            </label>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-          <div class="event__type-list">
-            <fieldset class="event__type-group">
-              <legend class="visually-hidden">Event type</legend>
-
-              ${createPointTypeListTemplate(POINT_TYPES, type)}
-
-            </fieldset>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                  ${createPointTypeListTemplate(POINT_TYPES, type)}
+              </fieldset>
+            </div>
           </div>
-      </div>
 
-      <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
-          ${type}
-        </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.city} list="destination-list-1">
-          <datalist id="destination-list-1">
+          <div class="event__field-group  event__field-group--destination">
+            <label class="event__label  event__type-output" for="event-destination-1">
+              ${type}
+            </label>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination.city} list="destination-list-1">
+            <datalist id="destination-list-1">
+              ${createCityListTemplate(destinations)}
+            </datalist>
+          </div>
 
-            ${createCityListTemplate(destinations)}
-
-          </datalist>
-      </div>
-
-      <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(startTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
-          &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
+          <div class="event__field-group  event__field-group--time">
+            <label class="visually-hidden" for="event-start-time-1">From</label>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(startTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
+            &mdash;
+            <label class="visually-hidden" for="event-end-time-1">To</label>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME_FORMAT)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -109,7 +107,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${price}>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -128,7 +126,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
           ${createDestinationSectionTemplate(description, pictures)}
         </section>
       </form>
-    </li>`;
+    </li>`
+  );
 };
 
 export default class PointFormView extends AbstractView {
@@ -149,7 +148,8 @@ export default class PointFormView extends AbstractView {
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#arrowUpClickHandler);
 
-    this.element.addEventListener('submit', this.#editFormSubmitHandler);
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#editFormSubmitHandler);
   }
 
   get template() {
