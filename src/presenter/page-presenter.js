@@ -32,10 +32,22 @@ export default class PagePresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
-    render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
-    render(new FilterView(), this.#filterContainer);
-    render(new SortingView(), this.#tripEventsContainer);
+    this.#renderTrip();
+  }
 
+  #renderSorting() {
+    render(new SortingView(), this.#tripEventsContainer);
+  }
+
+  #renderTripInfo() {
+    render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderFilter() {
+    render(new FilterView(), this.#filterContainer);
+  }
+
+  #renderPointList() {
     render(this.#pointListComponent, this.#tripEventsContainer);
 
     for (let i = 0; i < this.#points.length; i++) {
@@ -62,5 +74,12 @@ export default class PagePresenter {
 
     pointPresenter.init(point, destinations, offers);
     this.#pointPresenters.set(point.id, pointPresenter);
+  }
+
+  #renderTrip() {
+    this.#renderTripInfo();
+    this.#renderFilter();
+    this.#renderSorting();
+    this.#renderPointList();
   }
 }
