@@ -1,9 +1,12 @@
 import {render, replace, remove} from '../framework/render';
 import PointView from '../view/point-view';
 import PointFormView from '../view/point-form-view';
+import {Mode} from '../constants';
 
 export default class PointPresenter {
   #pointListContainer = null;
+  #handlePointChange = null;
+  #handleModeChange = null;
 
   #pointComponent = null;
   #pointEditFormComponent = null;
@@ -11,11 +14,12 @@ export default class PointPresenter {
   #point = null;
   #offers = [];
   #destinations = [];
-  #handlePointChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, onDataChange}) {
+  constructor({pointListContainer, onDataChange, onModeChange}) {
     this.#pointListContainer = pointListContainer;
     this.#handlePointChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(point, destinations, offers) {
@@ -45,16 +49,22 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointListContainer.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#pointListContainer.contains(prevPointEditFormComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditFormComponent, prevPointEditFormComponent);
     }
 
     remove(prevPointComponent);
     remove(prevPointEditFormComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditFormToPoint();
+    }
   }
 
   #escKeyDownHandler = (evt) => {
@@ -67,11 +77,14 @@ export default class PointPresenter {
   #replacePointToEditForm() {
     replace(this.#pointEditFormComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceEditFormToPoint() {
     replace(this.#pointComponent, this.#pointEditFormComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleArrowDownClick = () => {
