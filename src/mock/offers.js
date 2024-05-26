@@ -1,4 +1,4 @@
-import {getRandomIntInclusive} from '../utils';
+import {getRandomIntInclusive} from '../utils/point';
 
 export const offers = [
   {

@@ -22,3 +22,8 @@ export const POINT_TYPES = [
   'sightseeing',
   'restaurant',
 ];
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};

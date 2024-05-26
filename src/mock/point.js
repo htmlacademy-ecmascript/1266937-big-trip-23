@@ -5,7 +5,7 @@ import {
   getRandomBoolean,
   getRandomIntInclusive,
   getRandomArrayElements,
-} from '../utils';
+} from '../utils/point';
 import {offers} from './offers';
 import {generateMockDestination} from './destinations';
 import {POINT_TYPES} from '../constants';

@@ -1,4 +1,4 @@
-import Presenter from './presenter/presenter.js';
+import PagePresenter from './presenter/page-presenter.js';
 import PointsModel from './model/points-model.js';
 
 const tripMainElement = document.querySelector('.trip-main');
@@ -7,12 +7,11 @@ const tripEventsElement = document.querySelector('.trip-events');
 
 const pointsModel = new PointsModel();
 
-const presenter = new Presenter({
+const pagePresenter = new PagePresenter({
   tripInfoContainer: tripMainElement,
   filterContainer: filterControlsElement,
-  sortingContainer: tripEventsElement,
-  pointListContainer: tripEventsElement,
+  tripEventsContainer: tripEventsElement,
   pointsModel,
 });
 
-presenter.init();
+pagePresenter.init();
