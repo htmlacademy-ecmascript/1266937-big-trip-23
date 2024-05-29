@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(duration);
+dayjs.extend(isBetween);
 
 // mock
 export const getRandomArrayElement = (items) => (
@@ -71,3 +73,25 @@ export const getDuration = (start, end) => {
 
   return formattedDuration;
 };
+
+// у которых дата начала события больше текущей даты
+export const isFutureEvent = (startTime) => (
+  dayjs().isBefore(startTime, 'D')
+);
+
+// Present — список текущих точек маршрута,
+// т. е. точек, у которых дата начала события меньше (или равна) текущей даты,
+// а дата окончания больше (или равна) текущей даты
+export const isPresentEvent = (startTime, endTime) => (
+  dayjs().isBetween(startTime, endTime, 'D', '[]')
+);
+
+// Четвертый параметр обозначает сопричастность (охват).
+// [ указывает на то, что значение включено в этот промежуток. ( означает, что он исключен.
+
+// dayjs('2016-10-30').isBetween('2016-01-01', '2016-10-30', null, '[)')
+
+// у которых дата окончания маршрута меньше, чем текущая
+export const isPastEvent = (endTime) => (
+  dayjs().isAfter(endTime, 'D')
+);
