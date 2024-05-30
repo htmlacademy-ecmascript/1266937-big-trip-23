@@ -1,30 +1,34 @@
 import TripInfoView from '../view/trip-info-view.js';
-import FilterView from '../view/filter-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
+import {SortingOption} from '../constants.js';
 
 export default class PagePresenter {
   #tripInfoContainer = null;
-  #filterContainer = null;
   #tripEventsContainer = null;
   #pointsModel = null;
 
   #pointListComponent = new PointListView();
+  #emptyListComponent = new EmptyListView();
 
   #points = [];
   #destinations = [];
   #offers = [];
   #pointPresenters = new Map();
 
-  constructor({tripInfoContainer, filterContainer, tripEventsContainer, pointsModel}) {
+  #currentSortingOption = null;
+
+  constructor({tripInfoContainer, tripEventsContainer, pointsModel}) {
     this.#tripInfoContainer = tripInfoContainer;
-    this.#filterContainer = filterContainer;
     this.#tripEventsContainer = tripEventsContainer;
 
     this.#pointsModel = pointsModel;
+
+    this.#currentSortingOption = SortingOption.DAY;
   }
 
   init() {
@@ -36,15 +40,11 @@ export default class PagePresenter {
   }
 
   #renderSorting() {
-    render(new SortingView(), this.#tripEventsContainer);
+    render(new SortingView(this.#currentSortingOption), this.#tripEventsContainer);
   }
 
   #renderTripInfo() {
     render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderFilter() {
-    render(new FilterView(), this.#filterContainer);
   }
 
   #renderPointList() {
@@ -76,10 +76,19 @@ export default class PagePresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderEmptyList() {
+    render(this.#emptyListComponent, this.#tripEventsContainer);
+  }
+
   #renderTrip() {
     this.#renderTripInfo();
-    this.#renderFilter();
     this.#renderSorting();
+
+    if (this.#points.length === 0) {
+      this.#renderEmptyList();
+      return;
+    }
+
     this.#renderPointList();
   }
 }

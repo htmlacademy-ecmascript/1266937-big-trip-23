@@ -1,10 +1,3 @@
-export const FilterValue = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past',
-};
-
 export const TimeFormatDisplay = {
   DATE_FORMAT: 'MMM DD',
   TIME_FORMAT: 'HH:mm',
@@ -26,4 +19,19 @@ export const POINT_TYPES = [
 export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING'
+};
+
+export const FilterOption = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export const SortingOption = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
 };
