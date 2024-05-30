@@ -27,3 +27,11 @@ export const FilterOption = {
   PRESENT: 'present',
   PAST: 'past',
 };
+
+export const SortingOption = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};

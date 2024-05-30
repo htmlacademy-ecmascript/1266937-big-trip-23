@@ -17,8 +17,6 @@ const pagePresenter = new PagePresenter({
   pointsModel,
 });
 
-// filterContainer: filterControlsElement,
-
 const filters = Object.keys(filterByOptions);
 
 render(new FilterView({filters}), filterControlsElement);

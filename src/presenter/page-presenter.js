@@ -4,6 +4,7 @@ import PointListView from '../view/point-list-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
+import {SortingOption} from '../constants.js';
 
 export default class PagePresenter {
   #tripInfoContainer = null;
@@ -17,11 +18,15 @@ export default class PagePresenter {
   #offers = [];
   #pointPresenters = new Map();
 
+  #currentSortingOption = null;
+
   constructor({tripInfoContainer, tripEventsContainer, pointsModel}) {
     this.#tripInfoContainer = tripInfoContainer;
     this.#tripEventsContainer = tripEventsContainer;
 
     this.#pointsModel = pointsModel;
+
+    this.#currentSortingOption = SortingOption.DAY;
   }
 
   init() {
@@ -33,7 +38,7 @@ export default class PagePresenter {
   }
 
   #renderSorting() {
-    render(new SortingView(), this.#tripEventsContainer);
+    render(new SortingView(this.#currentSortingOption), this.#tripEventsContainer);
   }
 
   #renderTripInfo() {

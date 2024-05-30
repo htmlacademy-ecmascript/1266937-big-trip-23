@@ -1,37 +1,42 @@
 import AbstractView from '../framework/view/abstract-view';
+import {SortingOption} from '../constants';
 
 
-const createSortingFormTemplate = () => (
-  `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    <div class="trip-sort__item  trip-sort__item--day">
-      <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day">
-        <label class="trip-sort__btn" for="sort-day">Day</label>
-    </div>
-
-    <div class="trip-sort__item  trip-sort__item--event">
-      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-        <label class="trip-sort__btn" for="sort-event">Event</label>
-    </div>
-
-    <div class="trip-sort__item  trip-sort__item--time">
-      <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
-        <label class="trip-sort__btn" for="sort-time">Time</label>
-    </div>
-
-    <div class="trip-sort__item  trip-sort__item--price">
-      <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" checked>
-        <label class="trip-sort__btn" for="sort-price">Price</label>
-    </div>
-
-    <div class="trip-sort__item  trip-sort__item--offer">
-      <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-        <label class="trip-sort__btn" for="sort-offer">Offers</label>
-    </div>
-  </form>`
+const createSortingItemTemplate = (sortingOption, currentSortingOption) => (
+  `<div class="trip-sort__item  trip-sort__item--${sortingOption}">
+    <input
+    id="sort-${sortingOption}"
+    class="trip-sort__input  visually-hidden"
+    type="radio"
+    name="trip-${sortingOption}"
+    value="sort-${sortingOption}"
+    ${currentSortingOption === sortingOption ? 'checked' : ''}
+    ${(sortingOption === SortingOption.EVENT || sortingOption === SortingOption.OFFERS) ? 'disabled' : ''}>
+      <label class="trip-sort__btn" for="sort-${sortingOption}">${sortingOption}</label>
+  </div> `
 );
 
+const createSortingFormTemplate = () => {
+  const sortingItemsTemplate = Object.values(SortingOption)
+    .map((sortingItem) => createSortingItemTemplate(sortingItem))
+    .join('');
+
+  return (
+    `<form class="trip-events__trip-sort  trip-sort" action ="#" method="get" >
+      ${sortingItemsTemplate}
+    </form> `
+  );
+};
+
 export default class SortingView extends AbstractView {
+  #currentSortingOption = null;
+
+  constructor(currentSortingOption) {
+    super();
+    this.#currentSortingOption = currentSortingOption;
+  }
+
   get template() {
-    return createSortingFormTemplate();
+    return createSortingFormTemplate(this.#currentSortingOption);
   }
 }
