@@ -1,6 +1,7 @@
 import TripInfoView from '../view/trip-info-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
@@ -12,6 +13,7 @@ export default class PagePresenter {
   #pointsModel = null;
 
   #pointListComponent = new PointListView();
+  #emptyListComponent = new EmptyListView();
 
   #points = [];
   #destinations = [];
@@ -74,9 +76,19 @@ export default class PagePresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderEmptyList() {
+    render(this.#emptyListComponent, this.#tripEventsContainer);
+  }
+
   #renderTrip() {
     this.#renderTripInfo();
     this.#renderSorting();
+
+    if (this.#points.length === 0) {
+      this.#renderEmptyList();
+      return;
+    }
+
     this.#renderPointList();
   }
 }
