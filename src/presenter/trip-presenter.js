@@ -7,13 +7,14 @@ import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
 import {SortingOption} from '../constants.js';
 
-export default class PagePresenter {
+export default class TripPresenter {
   #tripInfoContainer = null;
   #tripEventsContainer = null;
   #pointsModel = null;
 
   #pointListComponent = new PointListView();
   #emptyListComponent = new EmptyListView();
+  #sortingComponent = null;
 
   #points = [];
   #destinations = [];
@@ -39,8 +40,18 @@ export default class PagePresenter {
     this.#renderTrip();
   }
 
+  #handleSortingOptionChange(sortingOption) {
+    // sort events
+    // clear list
+    // render new list
+  }
+
   #renderSorting() {
-    render(new SortingView(this.#currentSortingOption), this.#tripEventsContainer);
+    this.#sortingComponent = new SortingView(
+      {onSortingOptionChange: this.#handleSortingOptionChange}
+    );
+
+    render(this.#sortingComponent, this.#tripEventsContainer);
   }
 
   #renderTripInfo() {
