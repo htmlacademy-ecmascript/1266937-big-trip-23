@@ -29,7 +29,7 @@ export const FilterOption = {
 };
 
 export const SortingOption = {
-  DAY: 'day',
+  DEFAULT: 'day',
   EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
