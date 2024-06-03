@@ -39,7 +39,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#points = [...this.#pointsModel.points];
+    this.#points = [...this.#pointsModel.points].sort(sortEventsByDate);
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
