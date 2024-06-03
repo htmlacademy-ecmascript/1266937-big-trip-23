@@ -2,10 +2,11 @@ import TripInfoView from '../view/trip-info-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {render, RenderPosition} from '../framework/render.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
 import {SortingOption} from '../constants.js';
+import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
 
 export default class TripPresenter {
   #tripInfoContainer = null;
@@ -29,7 +30,7 @@ export default class TripPresenter {
 
     this.#pointsModel = pointsModel;
 
-    this.#currentSortingOption = SortingOption.DAY;
+    this.#currentSortingOption = SortingOption.DEFAULT;
   }
 
   init() {
@@ -40,16 +41,36 @@ export default class TripPresenter {
     this.#renderTrip();
   }
 
-  #handleSortingOptionChange(sortingOption) {
-    // sort events
-    // clear list
-    // render new list
+  #sortPoints(sortingOption) {
+    switch (sortingOption) {
+      case SortingOption.TIME:
+        this.#points.sort(sortEventsByDuration);
+        break;
+      case SortingOption.PRICE:
+        this.#points.sort(sortEventsByPrice);
+        break;
+      default:
+        this.#points.sort(sortEventsByDate);
+    }
+
+    this.#currentSortingOption = sortingOption;
   }
 
+  #handleSortingOptionChange = (sortingOption) => {
+    if (this.#currentSortingOption === sortingOption) {
+      return;
+    }
+
+    this.#sortPoints(sortingOption);
+    this.#clearTrip();
+    this.#renderTrip();
+  };
+
   #renderSorting() {
-    this.#sortingComponent = new SortingView(
-      {onSortingOptionChange: this.#handleSortingOptionChange}
-    );
+    this.#sortingComponent = new SortingView({
+      currentSortingOption: this.#currentSortingOption,
+      onSortingOptionChange: this.#handleSortingOptionChange,
+    });
 
     render(this.#sortingComponent, this.#tripEventsContainer);
   }
@@ -90,6 +111,14 @@ export default class TripPresenter {
   #renderEmptyList() {
     render(this.#emptyListComponent, this.#tripEventsContainer);
   }
+
+  #clearTrip() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+
+    remove(this.#sortingComponent);
+  }
+
 
   #renderTrip() {
     this.#renderTripInfo();
