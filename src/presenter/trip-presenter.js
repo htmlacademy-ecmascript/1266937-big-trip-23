@@ -1,9 +1,9 @@
-import TripInfoView from '../view/trip-info-view.js';
 import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {remove, render, RenderPosition} from '../framework/render.js';
+import {remove, render} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
+import TripInfoPresenter from './trip-info-presenter.js';
 import {updateItem} from '../utils/common.js';
 import {SortingOption} from '../constants.js';
 import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
@@ -21,6 +21,7 @@ export default class TripPresenter {
   #destinations = [];
   #offers = [];
   #pointPresenters = new Map();
+  #tripInfoPresenter = null;
 
   #currentSortingOption = null;
 
@@ -31,6 +32,10 @@ export default class TripPresenter {
     this.#pointsModel = pointsModel;
 
     this.#currentSortingOption = SortingOption.DEFAULT;
+
+    this.#tripInfoPresenter = new TripInfoPresenter({
+      tripInfoContainer: this.#tripInfoContainer
+    });
   }
 
   init() {
@@ -38,6 +43,7 @@ export default class TripPresenter {
     this.#destinations = [...this.#pointsModel.destinations];
     this.#offers = [...this.#pointsModel.offers];
 
+    this.#renderTripInfo();
     this.#renderTrip();
   }
 
@@ -75,10 +81,6 @@ export default class TripPresenter {
     render(this.#sortingComponent, this.#tripEventsContainer);
   }
 
-  #renderTripInfo() {
-    render(new TripInfoView(), this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
-  }
-
   #renderPointList() {
     render(this.#pointListComponent, this.#tripEventsContainer);
 
@@ -108,6 +110,10 @@ export default class TripPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderTripInfo() {
+    this.#tripInfoPresenter.init();
+  }
+
   #renderEmptyList() {
     render(this.#emptyListComponent, this.#tripEventsContainer);
   }
@@ -121,7 +127,7 @@ export default class TripPresenter {
 
 
   #renderTrip() {
-    this.#renderTripInfo();
+    // this.#renderTripInfo();
     this.#renderSorting();
 
     if (this.#points.length === 0) {
