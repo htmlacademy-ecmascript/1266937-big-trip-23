@@ -16,9 +16,10 @@ export default class PointPresenter {
   #destinations = [];
   #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, offers, onDataChange, onModeChange}) {
+  constructor({pointListContainer, offers, destinations, onDataChange, onModeChange}) {
     this.#pointListContainer = pointListContainer;
     this.#offers = offers;
+    this.#destinations = destinations;
     this.#handlePointChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -34,6 +35,7 @@ export default class PointPresenter {
     this.#pointComponent = new PointView({
       point: this.#point,
       offers: this.#offers,
+      destinations: this.#destinations,
       onArrowDownClick: this.#handleArrowDownClick,
       onFavoriteButtonClick: this.#handleFavoriteButtonClick
     });

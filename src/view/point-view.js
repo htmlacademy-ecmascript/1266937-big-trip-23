@@ -10,21 +10,22 @@ const createOfferListTemplate = (offers) => offers.map(({offers: {title, price}}
     <span class="event__offer-price">${price}</span>
   </li>`)).join('');
 
-const createPointViewTemplate = (point, offers) => {
+const createPointViewTemplate = (point, offers, destinations) => {
   const {
     type,
     startTime,
     endTime,
     isFavorite,
     price,
-    destination,
-    offers:
-    currentOfferIds
+    destination: currentDestinationId,
+    offers: currentOfferIds,
   } = point;
 
   const currentOffers = offers.filter((offer) => currentOfferIds.includes(offer.offers.id));
 
   const offerListTemplate = createOfferListTemplate(currentOffers);
+
+  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
 
   return (
     `<li class="trip-events__item">
@@ -44,7 +45,7 @@ const createPointViewTemplate = (point, offers) => {
             alt="Event type icon"
           >
         </div>
-        <h3 class="event__title">${type} ${destination.city}</h3>
+        <h3 class="event__title">${type} ${currentDestination.city}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time
@@ -89,14 +90,16 @@ const createPointViewTemplate = (point, offers) => {
 
 export default class PointView extends AbstractView {
   #point = null;
-  #offers = null;
+  #offers = [];
+  #destinations = [];
   #handleArrowDownClick = null;
   #handleFavoriteButtonClick = null;
 
-  constructor({point, offers, onArrowDownClick, onFavoriteButtonClick}) {
+  constructor({point, offers, destinations, onArrowDownClick, onFavoriteButtonClick}) {
     super();
     this.#point = point;
     this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleArrowDownClick = onArrowDownClick;
     this.#handleFavoriteButtonClick = onFavoriteButtonClick;
 
@@ -108,7 +111,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointViewTemplate(this.#point, this.#offers);
+    return createPointViewTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #arrowDownClickHandler = (evt) => {

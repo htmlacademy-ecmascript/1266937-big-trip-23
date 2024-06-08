@@ -22,6 +22,7 @@ const createPointTypeListTemplate = (types, activeType) => (
 );
 
 const createCityListTemplate = (destinations) => (
+  // const destinationList = new Set(destinations);
   destinations.map((destination) => (
     `<option value=${destination.city}></option>`
   )).join('')
@@ -93,14 +94,20 @@ const createPointFormTemplate = (point, destinations, offers) => {
     type,
     startTime,
     endTime,
-    destination,
+    destination: currentDestinationId,
     price,
     offers: currentOfferIds,
+    id,
   } = point;
 
-  const {description, pictures} = destination;
-
   const availableOffers = offers.filter((offer) => offer.type === type);
+  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
+  const {
+    city,
+    description,
+    pictures
+  } = currentDestination;
+
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);
   const offerSectionTemplate = createOfferSectionTemplate(availableOffers, currentOfferIds);
@@ -134,14 +141,14 @@ const createPointFormTemplate = (point, destinations, offers) => {
           </div>
 
           <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for="event-destination-1">
+            <label class="event__label  event__type-output" for=${id}>
               ${type}
             </label>
             <input
               class="event__input  event__input--destination"
-              id="event-destination-1"
+              id=${id}
               type="text" name="event-destination"
-              value=${destination.city}
+              value=${city}
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
@@ -229,10 +236,14 @@ export default class PointFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
 
+    // TODO
     if (this.element.querySelector('.event__available-offers')) {
       this.element.querySelector('.event__available-offers')
         .addEventListener('change', this.#offerChangeHandler);
     }
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
   }
 
   get template() {
@@ -256,7 +267,7 @@ export default class PointFormView extends AbstractStatefulView {
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      ...this._state.offers,
+      // ...this._state.offers,
       type: evt.target.value,
     });
   };
@@ -277,16 +288,27 @@ export default class PointFormView extends AbstractStatefulView {
     );
   };
 
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    const currentDestination = this.#destinations.find((destination) => (
+      destination.city === evt.target.value)
+    );
+
+    this.updateElement(
+      {destination: currentDestination.id}
+    );
+  };
+
   static parsePointToState(point) {
+
     return {
       ...point,
-
     };
   }
 
   static parseStateToPoint(state) {
     const point = {...state};
-
 
     return point;
   }
