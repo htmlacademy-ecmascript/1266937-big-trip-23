@@ -127,7 +127,6 @@ export default class TripPresenter {
 
 
   #renderTrip() {
-    // this.#renderTripInfo();
     this.#renderSorting();
 
     if (this.#points.length === 0) {

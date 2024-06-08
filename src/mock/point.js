@@ -13,7 +13,8 @@ import {POINT_TYPES} from '../constants';
 export const generateMockPoint = () => {
   const startTime = getRandomStartTimestamp();
   const type = getRandomArrayElement(POINT_TYPES);
-  const activeOffers = offers.filter((offer) => offer.type === type);
+  const offersByType = offers.filter((offer) => offer.type === type);
+  const offersId = offersByType.map(({offers: {id}}) => id);
   const destination = generateMockDestination();
 
   return {
@@ -23,7 +24,7 @@ export const generateMockPoint = () => {
     endTime: (getRandomEndTimestamp(startTime)).toISOString(),
     isFavorite: getRandomBoolean(),
     price: getRandomIntInclusive(50, 1300),
-    offers: getRandomArrayElements(activeOffers),
+    offers: getRandomArrayElements(offersId),
     destination: destination,
   };
 };
