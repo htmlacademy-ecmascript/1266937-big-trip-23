@@ -250,6 +250,12 @@ export default class PointFormView extends AbstractStatefulView {
     return createPointFormTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  reset(point) {
+    this.updateElement(
+      PointFormView.parsePointToState(point),
+    );
+  }
+
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#arrowUpClickHandler);
@@ -260,7 +266,6 @@ export default class PointFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
 
-    // TODO
     if (this.element.querySelector('.event__available-offers')) {
       this.element.querySelector('.event__available-offers')
         .addEventListener('change', this.#offerChangeHandler);
@@ -283,7 +288,6 @@ export default class PointFormView extends AbstractStatefulView {
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
-      // ...this._state.offers,
       type: evt.target.value,
     });
   };
