@@ -7,14 +7,14 @@ import {
   getRandomArrayElements,
 } from '../utils/point';
 import {offers} from './offers';
-import {generateMockDestination} from './destinations';
+import {destinations} from './destinations';
 import {POINT_TYPES} from '../constants';
 
 export const generateMockPoint = () => {
   const startTime = getRandomStartTimestamp();
   const type = getRandomArrayElement(POINT_TYPES);
-  const activeOffers = offers.filter((offer) => offer.type === type);
-  const destination = generateMockDestination();
+  const offersByType = offers.filter((offer) => offer.type === type);
+  const offersId = offersByType.map(({offers: {id}}) => id);
 
   return {
     id: crypto.randomUUID(),
@@ -23,7 +23,7 @@ export const generateMockPoint = () => {
     endTime: (getRandomEndTimestamp(startTime)).toISOString(),
     isFavorite: getRandomBoolean(),
     price: getRandomIntInclusive(50, 1300),
-    offers: getRandomArrayElements(activeOffers),
-    destination: destination,
+    offers: getRandomArrayElements(offersId),
+    destination: getRandomArrayElement(destinations).id,
   };
 };

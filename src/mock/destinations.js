@@ -56,3 +56,6 @@ export const generateMockDestination = () => (
     ]
   }
 );
+
+const DESTINATION_COUNT = 9;
+export const destinations = new Array(DESTINATION_COUNT).fill().map(generateMockDestination);
