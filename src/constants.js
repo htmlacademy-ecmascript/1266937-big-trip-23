@@ -22,7 +22,7 @@ export const Mode = {
 };
 
 export const FilterOption = {
-  EVERYTHING: 'everything',
+  DEFAULT: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
