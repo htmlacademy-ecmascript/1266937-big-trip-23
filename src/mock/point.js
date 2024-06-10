@@ -13,8 +13,8 @@ import {POINT_TYPES} from '../constants';
 export const generateMockPoint = () => {
   const startTime = getRandomStartTimestamp();
   const type = getRandomArrayElement(POINT_TYPES);
-  const offersByType = offers.filter((offer) => offer.type === type);
-  const offersId = offersByType.map(({offers: {id}}) => id);
+  const offersByType = offers.find((offer) => offer.type === type)?.offers || [];
+  const offersId = offersByType.map((offer) => offer.id);
 
   return {
     id: crypto.randomUUID(),

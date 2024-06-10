@@ -30,23 +30,23 @@ const createCityListTemplate = (destinations) => (
 
 // available offers => type
 const createOfferListTemplate = (offers, currentOffers) => (
-  offers.map(({offers: {title, price, id}}) => {
-    const isChecked = currentOffers.includes(id);
+  offers.map((offer) => {
+    const isChecked = currentOffers.includes(offer.id);
 
     return (`<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
-        id="${id}"
+        id="${offer.id}"
         type="checkbox"
-        name="event-offer-${getLastCharacterOfString(title)}"
+        name="event-offer-${getLastCharacterOfString(offer.title)}"
         ${isChecked ? 'checked' : ''}
       >
       <label
         class="event__offer-label"
-        for="${id}">
-          <span class="event__offer-title">${title}</span>
+        for="${offer.id}">
+          <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
+          <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`);
   }).join('')
@@ -100,8 +100,12 @@ const createPointFormTemplate = (point, destinations, offers) => {
     id,
   } = point;
 
-  const availableOffers = offers.filter((offer) => offer.type === type);
-  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
+  const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
+
+  const currentDestination = destinations.find((destination) => (
+    destination.id === currentDestinationId)
+  );
+
   const {
     city,
     description,
@@ -294,17 +298,17 @@ export default class PointFormView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
-    const offers = this._state.offers;
-    // => currentOffers
 
+    // => currentOffers
     if (evt.target.checked) {
-      offers.push(evt.target.id);
+      this._state.offers.push(evt.target.id);
     } else {
-      const index = offers.findIndex((offer) => offer.id === evt.target.id);
-      offers.splice(index, 1);
+      this._state.offers = this._state.offers.filter((offer) => (
+        offer !== evt.target.id)
+      );
     }
-    this.updateElement(
-      {offers}
+    this._setState(
+      {offers: this._state.offers}
     );
   };
 

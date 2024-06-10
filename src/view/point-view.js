@@ -3,7 +3,7 @@ import {humanizeEventDate, getDuration} from '../utils/point.js';
 import {TimeFormatDisplay} from '../constants.js';
 
 // selected offers
-const createOfferListTemplate = (offers) => offers.map(({offers: {title, price}}) => (
+const createOfferListTemplate = (offers) => offers.map(({title, price}) => (
   `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -21,7 +21,8 @@ const createPointViewTemplate = (point, offers, destinations) => {
     offers: currentOfferIds,
   } = point;
 
-  const currentOffers = offers.filter((offer) => currentOfferIds.includes(offer.offers.id));
+  const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
+  const currentOffers = availableOffers.filter((offer) => currentOfferIds.includes(offer.id));
 
   const offerListTemplate = createOfferListTemplate(currentOffers);
 
