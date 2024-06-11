@@ -1,6 +1,7 @@
 import {render} from '../framework/render';
 import FilterView from '../view/filter-view';
 import {filterByOptions} from '../utils/filter-utils';
+import {FilterOption} from '../constants';
 
 
 export default class FilterPresenter {

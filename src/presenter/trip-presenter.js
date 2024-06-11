@@ -4,7 +4,7 @@ import EmptyListView from '../view/empty-list-view.js';
 import {remove, render} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import TripInfoPresenter from './trip-info-presenter.js';
-import {SortingOption} from '../constants.js';
+import {SortingOption, UserAction, UpdateType} from '../constants.js';
 import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
 
 export default class TripPresenter {
@@ -21,7 +21,7 @@ export default class TripPresenter {
   #pointPresenters = new Map();
   #tripInfoPresenter = null;
 
-  #currentSortingOption = null;
+  #currentSortingOption = SortingOption.DEFAULT;
 
   constructor({tripInfoContainer, tripEventsContainer, pointsModel, destinationsModel, offersModel}) {
     this.#tripInfoContainer = tripInfoContainer;
@@ -31,12 +31,15 @@ export default class TripPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
 
-    this.#currentSortingOption = SortingOption.DEFAULT;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
 
     this.#tripInfoPresenter = new TripInfoPresenter({
       tripInfoContainer: this.#tripInfoContainer
     });
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
+
 
   get points() {
     switch (this.#currentSortingOption) {
@@ -93,15 +96,41 @@ export default class TripPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handlePointChange = (updatedPoint) => {
-    this.#pointPresenters.get(updatedPoint.id)
-      .init(updatedPoint, this.destinations, this.offers);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка
+        this.#pointPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список
+        this.#clearTrip();
+        this.#renderTrip();
+        break;
+      case UpdateType.MAJOR:
+        // - обновить весь маршрут
+        this.#clearTrip({resetSortingOption: true});
+        this.#renderTrip();
+        break;
+    }
   };
 
   #renderPoint(point, destinations, offers) {
     const pointPresenter = new PointPresenter({
       pointListContainer: this.#pointListComponent.element,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
 
@@ -117,11 +146,16 @@ export default class TripPresenter {
     render(this.#emptyListComponent, this.#tripEventsContainer);
   }
 
-  #clearTrip() {
+  #clearTrip({resetSortingOption = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
     remove(this.#sortingComponent);
+    remove(this.#emptyListComponent);
+
+    if (resetSortingOption) {
+      this.#currentSortingOption = SortingOption.DEFAULT;
+    }
   }
 
 
