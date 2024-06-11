@@ -14,6 +14,8 @@ export default class FilterPresenter {
   constructor({filterContainer, filterModel}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
+
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
@@ -36,11 +38,15 @@ export default class FilterPresenter {
     render(this.#filterComponent, this.#filterContainer);
   }
 
+  #handleModelEvent = () => {
+    this.init();
+  };
+
   #handleFilterOptionChange(filterOption) {
     if (this.#filterModel.filter === filterOption) {
       return;
     }
 
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterOption);
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterOption);
   }
 }

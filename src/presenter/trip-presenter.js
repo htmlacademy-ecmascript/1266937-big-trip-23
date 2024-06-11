@@ -6,6 +6,7 @@ import PointPresenter from './point-presenter.js';
 import TripInfoPresenter from './trip-info-presenter.js';
 import {SortingOption, UserAction, UpdateType} from '../constants.js';
 import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
+import {filterByOptions} from '../utils/filter-utils.js';
 
 export default class TripPresenter {
   #tripInfoContainer = null;
@@ -13,6 +14,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
   #pointListComponent = new PointListView();
   #emptyListComponent = new EmptyListView();
@@ -23,13 +25,14 @@ export default class TripPresenter {
 
   #currentSortingOption = SortingOption.DEFAULT;
 
-  constructor({tripInfoContainer, tripEventsContainer, pointsModel, destinationsModel, offersModel}) {
+  constructor({tripInfoContainer, tripEventsContainer, pointsModel, destinationsModel, offersModel, filterModel}) {
     this.#tripInfoContainer = tripInfoContainer;
     this.#tripEventsContainer = tripEventsContainer;
 
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
 
@@ -38,17 +41,22 @@ export default class TripPresenter {
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
 
   get points() {
+    const filterOption = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filterByOptions[filterOption](points);
+
     switch (this.#currentSortingOption) {
       case SortingOption.TIME:
-        return [...this.#pointsModel.points].sort(sortEventsByDuration);
+        return filteredPoints.points.sort(sortEventsByDuration);
       case SortingOption.PRICE:
-        return [...this.#pointsModel.points].sort(sortEventsByPrice);
+        return filteredPoints.points.sort(sortEventsByPrice);
       default:
-        return [...this.#pointsModel.points].sort(sortEventsByDate);
+        return filteredPoints.sort(sortEventsByDate);
     }
   }
 
@@ -157,7 +165,6 @@ export default class TripPresenter {
       this.#currentSortingOption = SortingOption.DEFAULT;
     }
   }
-
 
   #renderTrip() {
     this.#renderSorting();
