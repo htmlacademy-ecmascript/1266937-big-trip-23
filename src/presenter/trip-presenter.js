@@ -47,14 +47,14 @@ export default class TripPresenter {
 
   get points() {
     const filterOption = this.#filterModel.filter;
-    const points = this.#pointsModel.points;
+    const points = this.#pointsModel.points.sort(sortEventsByDate);
     const filteredPoints = filterByOptions[filterOption](points);
 
     switch (this.#currentSortingOption) {
       case SortingOption.TIME:
-        return filteredPoints.points.sort(sortEventsByDuration);
+        return filteredPoints.sort(sortEventsByDuration);
       case SortingOption.PRICE:
-        return filteredPoints.points.sort(sortEventsByPrice);
+        return filteredPoints.sort(sortEventsByPrice);
       default:
         return filteredPoints.sort(sortEventsByDate);
     }
@@ -105,7 +105,6 @@ export default class TripPresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
     switch (actionType) {
       case UserAction.UPDATE_POINT:
@@ -115,7 +114,6 @@ export default class TripPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
@@ -167,9 +165,12 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
-    this.#renderSorting();
+    const points = this.points;
+    if (points.length > 0) {
+      this.#renderSorting();
+    }
 
-    if (this.points.length === 0) {
+    if (points.length === 0) {
       this.#renderEmptyList();
       return;
     }

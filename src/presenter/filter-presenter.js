@@ -1,7 +1,7 @@
-import {render} from '../framework/render';
+import {remove, render, replace} from '../framework/render';
 import FilterView from '../view/filter-view';
 import {filterByOptions} from '../utils/filter-utils';
-import {FilterOption, UpdateType} from '../constants';
+import {UpdateType} from '../constants';
 
 
 export default class FilterPresenter {
@@ -24,6 +24,7 @@ export default class FilterPresenter {
 
   init() {
     const filters = this.filters;
+    const prevFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new FilterView({
       filters,
@@ -31,7 +32,13 @@ export default class FilterPresenter {
       onFilterOptionChange: this.#handleFilterOptionChange,
     });
 
-    this.#renderFilters();
+    if (prevFilterComponent === null) {
+      this.#renderFilters();
+      return;
+    }
+
+    replace(this.#filterComponent, prevFilterComponent);
+    remove(prevFilterComponent);
   }
 
   #renderFilters() {
@@ -42,11 +49,11 @@ export default class FilterPresenter {
     this.init();
   };
 
-  #handleFilterOptionChange(filterOption) {
+  #handleFilterOptionChange = (filterOption) => {
     if (this.#filterModel.filter === filterOption) {
       return;
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterOption);
-  }
+  };
 }
