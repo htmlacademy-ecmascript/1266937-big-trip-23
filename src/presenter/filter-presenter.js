@@ -1,6 +1,6 @@
 import {remove, render, replace} from '../framework/render';
 import FilterView from '../view/filter-view';
-import {filterByOptions} from '../utils/filter-utils';
+import {FilterOption} from '../constants';
 import {UpdateType} from '../constants';
 
 
@@ -19,7 +19,7 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    return Object.keys(filterByOptions);
+    return Object.values(FilterOption);
   }
 
   init() {

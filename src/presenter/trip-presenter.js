@@ -79,6 +79,7 @@ export default class TripPresenter {
     }
 
     this.#currentSortingOption = sortingOption;
+    // TODO
     this.#clearTrip();
     this.#renderTrip();
   };
@@ -92,6 +93,7 @@ export default class TripPresenter {
     render(this.#sortingComponent, this.#tripEventsContainer);
   }
 
+  // TODO
   #renderPointList() {
     render(this.#pointListComponent, this.#tripEventsContainer);
 
@@ -109,6 +111,9 @@ export default class TripPresenter {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
         break;
     }
   };
@@ -172,6 +177,7 @@ export default class TripPresenter {
 
     if (points.length === 0) {
       this.#renderEmptyList();
+      remove(this.#pointListComponent);
       return;
     }
 

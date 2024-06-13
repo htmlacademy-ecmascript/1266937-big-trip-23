@@ -46,6 +46,7 @@ export default class PointPresenter {
       offers: this.#offers,
       onArrowUpClick: this.#handleArrowUpClick,
       onFormSubmit: this.#handleFormSubmit,
+      onDeleteButtonClick: this.#handleDeleteButtonClick,
     });
 
     if (prevPointComponent === null || prevPointFormComponent === null) {
@@ -119,11 +120,20 @@ export default class PointPresenter {
   #handleFavoriteButtonClick = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
+      // TODO
       UpdateType.MINOR,
       {
         ...this.#point,
         isFavorite: !this.#point.isFavorite,
       }
+    );
+  };
+
+  #handleDeleteButtonClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
     );
   };
 }

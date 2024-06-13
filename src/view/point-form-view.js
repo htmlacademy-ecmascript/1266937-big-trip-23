@@ -219,17 +219,19 @@ export default class PointFormView extends AbstractStatefulView {
   #offers = [];
   #handleArrowUpClick = null;
   #handleFormSubmit = null;
+  #handleDeleteButtonClick = null;
 
   // TODO
   // BLANK_POINT
 
-  constructor({point, destinations, offers, onArrowUpClick, onFormSubmit}) {
+  constructor({point, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
     super();
     this._setState(PointFormView.parsePointToState(point));
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleArrowUpClick = onArrowUpClick;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleDeleteButtonClick = onDeleteButtonClick;
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#arrowUpClickHandler);
@@ -248,6 +250,9 @@ export default class PointFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteButtonClickHandler);
   }
 
   get template() {
@@ -322,6 +327,11 @@ export default class PointFormView extends AbstractStatefulView {
     this.updateElement(
       {destination: currentDestination.id}
     );
+  };
+
+  #deleteButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteButtonClick(PointFormView.parseStateToPoint(this._state));
   };
 
   static parsePointToState(point) {
