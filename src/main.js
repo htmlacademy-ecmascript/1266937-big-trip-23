@@ -4,6 +4,8 @@ import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
+import newPointButtonView from './view/new-point-button-view.js';
+import {render} from './framework/render.js';
 
 
 const tripMainElement = document.querySelector('.trip-main');
@@ -17,7 +19,7 @@ const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
   tripInfoContainer: tripMainElement,
-  tripEventsContainer: tripEventsElement,
+  tripPointsContainer: tripEventsElement,
   pointsModel,
   destinationsModel,
   offersModel,
@@ -28,6 +30,12 @@ const filterPresenter = new FilterPresenter({
   filterContainer: filterControlsElement,
   filterModel,
 });
+
+const newPointButtonComponent = new newPointButtonView({
+  // handler
+});
+
+render(newPointButtonComponent, tripMainElement);
 
 filterPresenter.init();
 tripPresenter.init();

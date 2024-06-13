@@ -10,7 +10,7 @@ import {filterByOptions} from '../utils/filter-utils.js';
 
 export default class TripPresenter {
   #tripInfoContainer = null;
-  #tripEventsContainer = null;
+  #tripPointsContainer = null;
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -25,9 +25,9 @@ export default class TripPresenter {
 
   #currentSortingOption = SortingOption.DEFAULT;
 
-  constructor({tripInfoContainer, tripEventsContainer, pointsModel, destinationsModel, offersModel, filterModel}) {
+  constructor({tripInfoContainer, tripPointsContainer, pointsModel, destinationsModel, offersModel, filterModel}) {
     this.#tripInfoContainer = tripInfoContainer;
-    this.#tripEventsContainer = tripEventsContainer;
+    this.#tripPointsContainer = tripPointsContainer;
 
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
@@ -90,12 +90,12 @@ export default class TripPresenter {
       onSortingOptionChange: this.#handleSortingOptionChange,
     });
 
-    render(this.#sortingComponent, this.#tripEventsContainer);
+    render(this.#sortingComponent, this.#tripPointsContainer);
   }
 
   // TODO
   #renderPointList() {
-    render(this.#pointListComponent, this.#tripEventsContainer);
+    render(this.#pointListComponent, this.#tripPointsContainer);
 
     for (let i = 0; i < this.points.length; i++) {
       this.#renderPoint(this.points[i], this.destinations, this.offers);
@@ -114,6 +114,9 @@ export default class TripPresenter {
         break;
       case UserAction.DELETE_POINT:
         this.#pointsModel.deletePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
         break;
     }
   };
@@ -154,7 +157,7 @@ export default class TripPresenter {
   }
 
   #renderEmptyList() {
-    render(this.#emptyListComponent, this.#tripEventsContainer);
+    render(this.#emptyListComponent, this.#tripPointsContainer);
   }
 
   #clearTrip({resetSortingOption = false} = {}) {
