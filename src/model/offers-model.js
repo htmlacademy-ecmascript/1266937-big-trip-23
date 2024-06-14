@@ -1,9 +1,18 @@
 import Observable from '../framework/observable';
-import {offers} from '../mock/offers';
 
 
 export default class OffersModel extends Observable {
-  #offers = offers;
+  #pointsApiService = null;
+  #offers = [];
+
+  constructor({pointsApiService}) {
+    super();
+    this.#pointsApiService = pointsApiService;
+
+    this.#pointsApiService.offers.then((offers) => {
+      console.log(offers)
+    });
+  }
 
   get offers() {
     return this.#offers;
