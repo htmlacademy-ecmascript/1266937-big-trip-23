@@ -1,11 +1,11 @@
 import {render, replace, remove} from '../framework/render';
 import PointView from '../view/point-view';
 import PointFormView from '../view/point-form-view';
-import {Mode} from '../constants';
+import {Mode, UpdateType, UserAction} from '../constants';
 
 export default class PointPresenter {
   #pointListContainer = null;
-  #handlePointChange = null;
+  #handleDataChange = null;
   #handleModeChange = null;
 
   #pointComponent = null;
@@ -20,7 +20,7 @@ export default class PointPresenter {
     this.#pointListContainer = pointListContainer;
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#handlePointChange = onDataChange;
+    this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
 
@@ -46,6 +46,7 @@ export default class PointPresenter {
       offers: this.#offers,
       onArrowUpClick: this.#handleArrowUpClick,
       onFormSubmit: this.#handleFormSubmit,
+      onDeleteButtonClick: this.#handleDeleteButtonClick,
     });
 
     if (prevPointComponent === null || prevPointFormComponent === null) {
@@ -108,14 +109,31 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    this.#handlePointChange(point);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point
+    );
     this.#replaceFormToPoint();
   };
 
   #handleFavoriteButtonClick = () => {
-    this.#handlePointChange({
-      ...this.#point,
-      isFavorite: !this.#point.isFavorite
-    });
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      // TODO
+      UpdateType.MINOR,
+      {
+        ...this.#point,
+        isFavorite: !this.#point.isFavorite,
+      }
+    );
+  };
+
+  #handleDeleteButtonClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

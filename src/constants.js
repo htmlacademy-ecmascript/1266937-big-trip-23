@@ -22,7 +22,7 @@ export const Mode = {
 };
 
 export const FilterOption = {
-  EVERYTHING: 'everything',
+  DEFAULT: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
@@ -34,4 +34,26 @@ export const SortingOption = {
   TIME: 'time',
   PRICE: 'price',
   OFFERS: 'offers',
+};
+
+export const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const NEW_POINT = {
+  type: 'flight',
+  offers: [],
+  destination: '',
+  startTime: new Date(),
+  endTime: new Date(),
+  price: 0,
+  isFavorite: false,
 };

@@ -25,7 +25,7 @@ export const getRandomIntInclusive = (min, max) => {
 };
 
 export const getRandomStartTimestamp = () => {
-  const start = new Date();
+  const start = new Date(2024, 1);
   const end = new Date(2024, 9);
 
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));

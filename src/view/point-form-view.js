@@ -22,6 +22,7 @@ const createPointTypeListTemplate = (types, activeType) => (
 );
 
 const createCityListTemplate = (destinations) => (
+  // TODO
   // const destinationList = new Set(destinations);
   destinations.map((destination) => (
     `<option value=${destination.city}></option>`
@@ -30,23 +31,23 @@ const createCityListTemplate = (destinations) => (
 
 // available offers => type
 const createOfferListTemplate = (offers, currentOffers) => (
-  offers.map(({offers: {title, price, id}}) => {
-    const isChecked = currentOffers.includes(id);
+  offers.map((offer) => {
+    const isChecked = currentOffers.includes(offer.id);
 
     return (`<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
-        id="${id}"
+        id="${offer.id}"
         type="checkbox"
-        name="event-offer-${getLastCharacterOfString(title)}"
+        name="event-offer-${getLastCharacterOfString(offer.title)}"
         ${isChecked ? 'checked' : ''}
       >
       <label
         class="event__offer-label"
-        for="${id}">
-          <span class="event__offer-title">${title}</span>
+        for="${offer.id}">
+          <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
+          <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`);
   }).join('')
@@ -65,7 +66,7 @@ const createOfferSectionTemplate = (offers, currentOffers) => {
 };
 
 const createPictureListTemplate = (pictures) => (
-  pictures.map((picture) => (
+  pictures?.map((picture) => (
     `<img
       class="event__photo"
       src=${picture.src}
@@ -100,13 +101,15 @@ const createPointFormTemplate = (point, destinations, offers) => {
     id,
   } = point;
 
-  const availableOffers = offers.filter((offer) => offer.type === type);
+  const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
+
   const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
+
   const {
     city,
     description,
     pictures
-  } = currentDestination;
+  } = currentDestination || {};
 
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);
@@ -141,14 +144,15 @@ const createPointFormTemplate = (point, destinations, offers) => {
           </div>
 
           <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for=${id}>
+            <label class="event__label  event__type-output" for="${id || 'event-destination-1'}">
               ${type}
             </label>
             <input
               class="event__input  event__input--destination"
-              id=${id}
-              type="text" name="event-destination"
-              value=${city}
+              id="${id || 'event-destination-1'}"
+              type="text" 
+              name="event-destination"
+              value="${city || ''}"
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
@@ -196,14 +200,12 @@ const createPointFormTemplate = (point, destinations, offers) => {
             <span class="visually-hidden">Open event</span>
           </button>
 
-          <!--add-new-point-form-->
-          <!--<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>-->
           <!--<button class="event__reset-btn" type="reset">Cancel</button>-->
 
         </header>
         <section class="event__details">
           ${availableOffers.length > 0 ? offerSectionTemplate : ''}
-          ${description.length > 0 ? destinationSectionTemplate : ''}
+          ${description && pictures ? destinationSectionTemplate : ''}
         </section >
       </form >
     </li >`
@@ -211,39 +213,22 @@ const createPointFormTemplate = (point, destinations, offers) => {
 };
 
 export default class PointFormView extends AbstractStatefulView {
-  #destinations = [];
   #offers = [];
+  #destinations = [];
   #handleArrowUpClick = null;
   #handleFormSubmit = null;
+  #handleDeleteButtonClick = null;
 
-  // TODO
-  // BLANK_POINT
-
-  constructor({point, destinations, offers, onArrowUpClick, onFormSubmit}) {
+  constructor({point, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
     super();
     this._setState(PointFormView.parsePointToState(point));
-    this.#destinations = destinations;
     this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleArrowUpClick = onArrowUpClick;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleDeleteButtonClick = onDeleteButtonClick;
 
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#arrowUpClickHandler);
-
-    this.element.querySelector('.event--edit')
-      .addEventListener('submit', this.#formSubmitHandler);
-
-    this.element.querySelector('.event__type-group')
-      .addEventListener('change', this.#typeChangeHandler);
-
-    // TODO
-    if (this.element.querySelector('.event__available-offers')) {
-      this.element.querySelector('.event__available-offers')
-        .addEventListener('change', this.#offerChangeHandler);
-    }
-
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('change', this.#destinationChangeHandler);
+    this._restoreHandlers();
   }
 
   get template() {
@@ -273,6 +258,9 @@ export default class PointFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteButtonClickHandler);
   }
 
   #arrowUpClickHandler = (evt) => {
@@ -294,30 +282,31 @@ export default class PointFormView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
-    const offers = this._state.offers;
-    // => currentOffers
 
+    // => currentOffers
     if (evt.target.checked) {
-      offers.push(evt.target.id);
+      this._state.offers.push(evt.target.id);
     } else {
-      const index = offers.findIndex((offer) => offer.id === evt.target.id);
-      offers.splice(index, 1);
+      this._state.offers = this._state.offers.filter((offer) => offer !== evt.target.id);
     }
-    this.updateElement(
-      {offers}
+    this._setState(
+      {offers: this._state.offers}
     );
   };
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const currentDestination = this.#destinations.find((destination) => (
-      destination.city === evt.target.value)
-    );
+    const currentDestination = this.#destinations.find((destination) => destination.city === evt.target.value);
 
     this.updateElement(
       {destination: currentDestination.id}
     );
+  };
+
+  #deleteButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteButtonClick(PointFormView.parseStateToPoint(this._state));
   };
 
   static parsePointToState(point) {
