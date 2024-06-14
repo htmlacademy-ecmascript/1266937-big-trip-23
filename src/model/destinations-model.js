@@ -7,14 +7,19 @@ export default class DestinationsModel extends Observable {
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.destinations.then((destinations) => {
-      console.log(destinations.map(this.#adaptToClient));
-    });
   }
 
   get destinations() {
     return this.#destinations;
+  }
+
+  async init() {
+    try {
+      const destinations = await this.#pointsApiService.destinations;
+      this.#destinations = destinations.map(this.#adaptToClient);
+    } catch (err) {
+      this.#destinations = [];
+    }
   }
 
   #adaptToClient(destinations) {

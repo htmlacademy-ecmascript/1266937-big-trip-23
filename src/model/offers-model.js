@@ -8,13 +8,18 @@ export default class OffersModel extends Observable {
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.offers.then((offers) => {
-      console.log(offers);
-    });
   }
 
   get offers() {
     return this.#offers;
+  }
+
+  async init() {
+    try {
+      const offers = await this.#pointsApiService.offers;
+      this.#offers = offers;
+    } catch (err) {
+      this.#offers = [];
+    }
   }
 }
