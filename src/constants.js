@@ -47,3 +47,13 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
+
+export const NEW_POINT = {
+  type: 'flight',
+  offers: [],
+  destination: '',
+  startTime: null,
+  endTime: null,
+  price: 0,
+  isFavorite: false,
+};

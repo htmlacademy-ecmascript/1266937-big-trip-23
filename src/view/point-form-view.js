@@ -22,6 +22,7 @@ const createPointTypeListTemplate = (types, activeType) => (
 );
 
 const createCityListTemplate = (destinations) => (
+  // TODO
   // const destinationList = new Set(destinations);
   destinations.map((destination) => (
     `<option value=${destination.city}></option>`
@@ -65,7 +66,7 @@ const createOfferSectionTemplate = (offers, currentOffers) => {
 };
 
 const createPictureListTemplate = (pictures) => (
-  pictures.map((picture) => (
+  pictures?.map((picture) => (
     `<img
       class="event__photo"
       src=${picture.src}
@@ -102,15 +103,13 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
   const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
 
-  const currentDestination = destinations.find((destination) => (
-    destination.id === currentDestinationId)
-  );
+  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
 
   const {
     city,
     description,
     pictures
-  } = currentDestination;
+  } = currentDestination || '';
 
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);
@@ -207,7 +206,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
         </header>
         <section class="event__details">
           ${availableOffers.length > 0 ? offerSectionTemplate : ''}
-          ${description.length > 0 ? destinationSectionTemplate : ''}
+          ${description && pictures ? destinationSectionTemplate : ''}
         </section >
       </form >
     </li >`
@@ -215,44 +214,22 @@ const createPointFormTemplate = (point, destinations, offers) => {
 };
 
 export default class PointFormView extends AbstractStatefulView {
-  #destinations = [];
   #offers = [];
+  #destinations = [];
   #handleArrowUpClick = null;
   #handleFormSubmit = null;
   #handleDeleteButtonClick = null;
 
-  // TODO
-  // BLANK_POINT
-
   constructor({point, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
     super();
     this._setState(PointFormView.parsePointToState(point));
-    this.#destinations = destinations;
     this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleArrowUpClick = onArrowUpClick;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteButtonClick = onDeleteButtonClick;
 
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#arrowUpClickHandler);
-
-    this.element.querySelector('.event--edit')
-      .addEventListener('submit', this.#formSubmitHandler);
-
-    this.element.querySelector('.event__type-group')
-      .addEventListener('change', this.#typeChangeHandler);
-
-    // TODO
-    if (this.element.querySelector('.event__available-offers')) {
-      this.element.querySelector('.event__available-offers')
-        .addEventListener('change', this.#offerChangeHandler);
-    }
-
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('change', this.#destinationChangeHandler);
-
-    this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#deleteButtonClickHandler);
+    this._restoreHandlers();
   }
 
   get template() {
@@ -282,6 +259,9 @@ export default class PointFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteButtonClickHandler);
   }
 
   #arrowUpClickHandler = (evt) => {
@@ -308,9 +288,7 @@ export default class PointFormView extends AbstractStatefulView {
     if (evt.target.checked) {
       this._state.offers.push(evt.target.id);
     } else {
-      this._state.offers = this._state.offers.filter((offer) => (
-        offer !== evt.target.id)
-      );
+      this._state.offers = this._state.offers.filter((offer) => offer !== evt.target.id);
     }
     this._setState(
       {offers: this._state.offers}
@@ -320,9 +298,7 @@ export default class PointFormView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const currentDestination = this.#destinations.find((destination) => (
-      destination.city === evt.target.value)
-    );
+    const currentDestination = this.#destinations.find((destination) => destination.city === evt.target.value);
 
     this.updateElement(
       {destination: currentDestination.id}
