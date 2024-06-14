@@ -52,8 +52,8 @@ export const NEW_POINT = {
   type: 'flight',
   offers: [],
   destination: '',
-  startTime: null,
-  endTime: null,
+  startTime: new Date(),
+  endTime: new Date(),
   price: 0,
   isFavorite: false,
 };

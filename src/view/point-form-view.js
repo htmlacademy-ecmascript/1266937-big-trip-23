@@ -109,7 +109,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
     city,
     description,
     pictures
-  } = currentDestination || '';
+  } = currentDestination || {};
 
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);
@@ -144,14 +144,15 @@ const createPointFormTemplate = (point, destinations, offers) => {
           </div>
 
           <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for=${id}>
+            <label class="event__label  event__type-output" for="${id || 'event-destination-1'}">
               ${type}
             </label>
             <input
               class="event__input  event__input--destination"
-              id=${id}
-              type="text" name="event-destination"
-              value=${city}
+              id="${id || 'event-destination-1'}"
+              type="text" 
+              name="event-destination"
+              value="${city || ''}"
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
@@ -199,8 +200,6 @@ const createPointFormTemplate = (point, destinations, offers) => {
             <span class="visually-hidden">Open event</span>
           </button>
 
-          <!--add-new-point-form-->
-          <!--<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>-->
           <!--<button class="event__reset-btn" type="reset">Cancel</button>-->
 
         </header>
