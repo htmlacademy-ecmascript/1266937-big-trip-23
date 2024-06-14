@@ -9,11 +9,22 @@ export default class DestinationsModel extends Observable {
     this.#pointsApiService = pointsApiService;
 
     this.#pointsApiService.destinations.then((destinations) => {
-      console.log(destinations)
+      console.log(destinations.map(this.#adaptToClient));
     });
   }
 
   get destinations() {
     return this.#destinations;
+  }
+
+  #adaptToClient(destinations) {
+    const adaptedDestinations = {
+      ...destinations,
+      city: destinations['name'],
+    };
+
+    delete adaptedDestinations['name'];
+
+    return adaptedDestinations;
   }
 }
