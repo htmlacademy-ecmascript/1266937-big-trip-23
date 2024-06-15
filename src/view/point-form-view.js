@@ -2,6 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {POINT_TYPES, TimeFormatDisplay} from '../constants.js';
 import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.js';
 import {humanizeEventDate} from '../utils/point.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createPointTypeListTemplate = (types, activeType) => (
   types.map((type) => (
@@ -218,6 +220,8 @@ export default class PointFormView extends AbstractStatefulView {
   #handleArrowUpClick = null;
   #handleFormSubmit = null;
   #handleDeleteButtonClick = null;
+  #startDatePicker = null;
+  #endDatePicker = null;
 
   constructor({point, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
     super();
@@ -233,6 +237,20 @@ export default class PointFormView extends AbstractStatefulView {
 
   get template() {
     return createPointFormTemplate(this._state, this.#destinations, this.#offers);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#startDatePicker) {
+      this.#startDatePicker.destroy();
+      this.#startDatePicker = null;
+    }
+
+    if (this.#endDatePicker) {
+      this.#endDatePicker.destroy();
+      this.#endDatePicker = null;
+    }
   }
 
   reset(point) {
@@ -261,6 +279,9 @@ export default class PointFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#deleteButtonClickHandler);
+
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
   }
 
   #arrowUpClickHandler = (evt) => {
@@ -308,6 +329,46 @@ export default class PointFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.#handleDeleteButtonClick(PointFormView.parseStateToPoint(this._state));
   };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this._setState({
+      startTime: userDate
+    });
+  };
+
+  // TODO Update Element
+  #endDateChangeHandler = ([userDate]) => {
+    this._setState({
+      endTime: userDate
+    });
+  };
+
+  #setStartDatePicker() {
+    this.#startDatePicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.startTime,
+        enableTime: true,
+        'time_24hr': true,
+        onChange: this.#startDateChangeHandler,
+      }
+    );
+  }
+
+  #setEndDatePicker() {
+    this.#endDatePicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.endTime,
+        enableTime: true,
+        'time_24hr': true,
+        minDate: this._state.startTime,
+        onChange: this.#endDateChangeHandler,
+      }
+    );
+  }
 
   static parsePointToState(point) {
 
