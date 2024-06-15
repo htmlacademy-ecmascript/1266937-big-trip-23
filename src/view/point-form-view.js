@@ -50,7 +50,7 @@ const createOfferListTemplate = (offers, currentOffers) => (
         for="${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${he.encode(offer.price)}</span>
+          <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`);
   }).join('')
@@ -118,6 +118,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
   const cityListTemplate = createCityListTemplate(destinations);
   const offerSectionTemplate = createOfferSectionTemplate(availableOffers, currentOfferIds);
   const destinationSectionTemplate = createDestinationSectionTemplate(description, pictures);
+
+  // TODO he.encode(price)
 
   return (
     `<li class="trip-events__item">
