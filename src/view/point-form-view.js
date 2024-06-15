@@ -4,6 +4,7 @@ import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.j
 import {humanizeEventDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const createPointTypeListTemplate = (types, activeType) => (
   types.map((type) => (
@@ -49,7 +50,7 @@ const createOfferListTemplate = (offers, currentOffers) => (
         for="${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
+          <span class="event__offer-price">${he.encode(offer.price)}</span>
       </label>
     </div>`);
   }).join('')
@@ -154,7 +155,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               id="${id || 'event-destination-1'}"
               type="text" 
               name="event-destination"
-              value="${city || ''}"
+              value="${he.encode(city || '')}"
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
