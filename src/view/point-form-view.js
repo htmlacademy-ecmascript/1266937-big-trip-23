@@ -4,7 +4,6 @@ import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.j
 import {humanizeEventDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import dayjs from 'dayjs';
 
 const createPointTypeListTemplate = (types, activeType) => (
   types.map((type) => (
