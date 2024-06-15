@@ -2,6 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {POINT_TYPES, TimeFormatDisplay} from '../constants.js';
 import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.js';
 import {humanizeEventDate} from '../utils/point.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createPointTypeListTemplate = (types, activeType) => (
   types.map((type) => (
