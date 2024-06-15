@@ -3,12 +3,18 @@ import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import LoadingView from '../view/loading-view.js';
 import {remove, render} from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import TripInfoPresenter from './trip-info-presenter.js';
 import {SortingOption, UserAction, UpdateType, FilterOption} from '../constants.js';
 import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
 import {filterByOptions} from '../utils/filter-utils.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #tripInfoContainer = null;
@@ -29,6 +35,11 @@ export default class TripPresenter {
 
   #currentSortingOption = SortingOption.DEFAULT;
   #isLoading = true;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({
     tripInfoContainer,
@@ -122,6 +133,7 @@ export default class TripPresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     // Здесь будем вызывать обновление модели.
     switch (actionType) {
       case UserAction.UPDATE_POINT:
@@ -134,6 +146,8 @@ export default class TripPresenter {
         this.#pointsModel.addPoint(updateType, update);
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
