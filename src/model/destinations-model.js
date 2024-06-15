@@ -22,14 +22,14 @@ export default class DestinationsModel extends Observable {
     }
   }
 
-  #adaptToClient(destinations) {
-    const adaptedDestinations = {
-      ...destinations,
-      city: destinations['name'],
+  #adaptToClient(destination) {
+    const adaptedDestination = {
+      ...destination,
+      city: destination['name'],
     };
 
-    delete adaptedDestinations['name'];
+    delete adaptedDestination['name'];
 
-    return adaptedDestinations;
+    return adaptedDestination;
   }
 }

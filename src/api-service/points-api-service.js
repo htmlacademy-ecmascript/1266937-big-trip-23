@@ -34,7 +34,7 @@ export default class PointsApiService extends ApiService {
     return parsedResponse;
   }
 
-  #adaptToServer(point) {
+  #adaptToServer(point, destination) {
     const adaptedPoint = {
       ...point,
       'base_price': point.price,
@@ -43,12 +43,19 @@ export default class PointsApiService extends ApiService {
       'is_favorite': point.isFavorite,
     };
 
+    const adaptedDestination = {
+      ...destination,
+      'name': destination.city
+    };
+
     // Ненужные ключи мы удаляем
     delete adaptedPoint.price;
     delete adaptedPoint.startTime;
     delete adaptedPoint.endTime;
     delete adaptedPoint.isFavorite;
 
-    return adaptedPoint;
+    delete adaptedDestination.city;
+
+    return adaptedPoint, adaptedDestination;
   }
 }

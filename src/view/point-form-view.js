@@ -103,13 +103,13 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
   const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
 
-  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
+  const currentDestination = destinations.find((destination) => destination.id === currentDestinationId) || {};
 
   const {
     city,
     description,
     pictures
-  } = currentDestination || {};
+  } = currentDestination;
 
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);

@@ -27,6 +27,7 @@ const createPointViewTemplate = (point, offers, destinations) => {
   const offerListTemplate = createOfferListTemplate(currentOffers);
 
   const currentDestination = destinations.find((destination) => destination.id === currentDestinationId);
+  const {city} = currentDestination;
 
   return (
     `<li class="trip-events__item">
@@ -46,7 +47,7 @@ const createPointViewTemplate = (point, offers, destinations) => {
             alt="Event type icon"
           >
         </div>
-        <h3 class="event__title">${type} ${currentDestination.city}</h3>
+        <h3 class="event__title">${type} ${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time

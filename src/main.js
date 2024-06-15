@@ -33,8 +33,8 @@ const tripPresenter = new TripPresenter({
   tripInfoContainer: tripMainElement,
   tripPointsContainer: tripEventsElement,
   pointsModel,
-  offersModel,
   destinationsModel,
+  offersModel,
   filterModel,
   onNewPointDestroy: handleNewPointFormClose,
 });
@@ -57,11 +57,12 @@ function handleNewPointFormClose() {
   newPointButtonComponent.element.disabled = false;
 }
 
-render(newPointButtonComponent, tripMainElement);
-
 filterPresenter.init();
 tripPresenter.init();
 
 destinationsModel.init();
 offersModel.init();
-pointsModel.init();
+pointsModel.init()
+  .finally(() => {
+    render(newPointButtonComponent, tripMainElement);
+  });
