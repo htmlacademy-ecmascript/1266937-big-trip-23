@@ -2,7 +2,7 @@ import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import LoadingView from '../view/loading-view.js';
-import {remove, render} from '../framework/render.js';
+import {RenderPosition, remove, render} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -25,9 +25,9 @@ export default class TripPresenter {
   #filterModel = null;
 
   #pointListComponent = new PointListView();
-  #emptyListComponent = new EmptyListView();
   #loadingComponent = new LoadingView();
   #sortingComponent = null;
+  #emptyListComponent = null;
 
   #pointPresenters = new Map();
   #tripInfoPresenter = null;
@@ -92,6 +92,10 @@ export default class TripPresenter {
 
   get offers() {
     return this.#offersModel.offers;
+  }
+
+  get filter() {
+    return this.#filterModel.filter;
   }
 
   init() {
@@ -213,6 +217,10 @@ export default class TripPresenter {
   }
 
   #renderEmptyList() {
+    this.#emptyListComponent = new EmptyListView({
+      filterOption: this.filter
+    });
+
     render(this.#emptyListComponent, this.#tripPointsContainer);
   }
 
@@ -238,14 +246,15 @@ export default class TripPresenter {
     }
 
     const points = this.points;
-    if (points.length > 0) {
-      this.#renderSorting();
+    const pointCount = points.length;
+
+    if (pointCount === 0) {
+      this.#renderEmptyList();
+      return;
     }
 
-    if (points.length === 0) {
-      this.#renderEmptyList();
-      remove(this.#pointListComponent);
-      return;
+    if (pointCount > 0) {
+      this.#renderSorting();
     }
 
     this.#renderPointList(points, this.destinations, this.offers);
