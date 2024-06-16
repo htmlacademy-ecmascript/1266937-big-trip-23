@@ -2,7 +2,8 @@ import SortingView from '../view/sorting-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import LoadingView from '../view/loading-view.js';
-import {RenderPosition, remove, render} from '../framework/render.js';
+import FailedLoadView from '../view/failed-load-view.js';
+import {remove, render} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -28,6 +29,7 @@ export default class TripPresenter {
   #loadingComponent = new LoadingView();
   #sortingComponent = null;
   #emptyListComponent = null;
+  #failedLoadComponent = null;
 
   #pointPresenters = new Map();
   #tripInfoPresenter = null;
@@ -96,6 +98,10 @@ export default class TripPresenter {
 
   get filter() {
     return this.#filterModel.filter;
+  }
+
+  get failedLoad() {
+    return this.#pointsModel.isFailedLoad;
   }
 
   init() {
@@ -216,6 +222,14 @@ export default class TripPresenter {
     render(this.#loadingComponent, this.#tripPointsContainer);
   }
 
+  #renderFailedLoad() {
+    this.#failedLoadComponent = new FailedLoadView({
+      isFailedLoad: this.failedLoad,
+    });
+
+    render(this.#failedLoadComponent, this.#tripPointsContainer);
+  }
+
   #renderEmptyList() {
     this.#emptyListComponent = new EmptyListView({
       filterOption: this.filter
@@ -231,6 +245,7 @@ export default class TripPresenter {
 
     remove(this.#sortingComponent);
     remove(this.#emptyListComponent);
+    remove(this.#failedLoadComponent);
 
     if (resetSortingOption) {
       this.#currentSortingOption = SortingOption.DEFAULT;
@@ -242,6 +257,11 @@ export default class TripPresenter {
   #renderTrip() {
     if (this.#isLoading) {
       this.#renderLoading();
+      return;
+    }
+
+    if (this.failedLoad) {
+      this.#renderFailedLoad();
       return;
     }
 

@@ -6,6 +6,7 @@ export default class PointsModel extends Observable {
   #points = [];
   #destinationsModel = null;
   #offersModel = null;
+  isFailedLoad = false;
 
   constructor({pointsApiService, destinationsModel, offersModel}) {
     super();
@@ -29,6 +30,7 @@ export default class PointsModel extends Observable {
       this.#points = points.map(this.#adaptToClient);
     } catch (err) {
       this.#points = [];
+      this.isFailedLoad = true;
     }
 
     this._notify(UpdateType.INIT);
