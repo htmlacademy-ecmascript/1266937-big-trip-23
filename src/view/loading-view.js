@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-// trip-events
 const createLoadingTemplate = () => (
   `<p class="trip-events__msg">
       Loading...

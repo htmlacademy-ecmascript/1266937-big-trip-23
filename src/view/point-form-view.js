@@ -25,14 +25,11 @@ const createPointTypeListTemplate = (types, activeType) => (
 );
 
 const createCityListTemplate = (destinations) => (
-  // TODO
-  // const destinationList = new Set(destinations);
   destinations.map((destination) => (
     `<option value=${destination.city}></option>`
   )).join('')
 );
 
-// available offers => type
 const createOfferListTemplate = (offers, currentOffers) => (
   offers.map((offer) => {
     const isChecked = currentOffers.includes(offer.id);
@@ -122,8 +119,6 @@ const createPointFormTemplate = (point, destinations, offers) => {
   const offerSectionTemplate = createOfferSectionTemplate(availableOffers, currentOfferIds);
   const destinationSectionTemplate = createDestinationSectionTemplate(description, pictures);
 
-  // TODO he.encode(price)
-
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -198,7 +193,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               id="event-price-1"
               type="text"
               name="event-price"
-              value=${price}
+              value=${he.encode(price.toString())}
             >
           </div>
 
@@ -206,15 +201,13 @@ const createPointFormTemplate = (point, destinations, offers) => {
             ${isSaving ? 'Saving...' : 'Save'}
           </button>
 
-          ${point !== NEW_POINT ?
-      `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-            ${isDeleting ? 'Deleting...' : 'Delete'}
-          </button>` :
-      '<button class="event__reset-btn" type="reset">Cancel</button>'}
-
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            ${id ? `${isDeleting ? 'Deleting...' : 'Delete'}` : 'Cancel'}
           </button>
+
+          ${id ? `<button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>` : ''}
 
         </header>
         <section class="event__details">
@@ -272,8 +265,11 @@ export default class PointFormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#arrowUpClickHandler);
+    // TODO
+    if (this.element.querySelector('.event__rollup-btn')) {
+      this.element.querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#arrowUpClickHandler);
+    }
 
     this.element.querySelector('.event--edit')
       .addEventListener('submit', this.#formSubmitHandler);
@@ -319,7 +315,6 @@ export default class PointFormView extends AbstractStatefulView {
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
 
-    // => currentOffers
     if (evt.target.checked) {
       this._state.offers.push(evt.target.id);
     } else {
@@ -356,14 +351,13 @@ export default class PointFormView extends AbstractStatefulView {
   };
 
   #startDateChangeHandler = ([userDate]) => {
-    this._setState({
+    this.updateElement({
       startTime: userDate
     });
   };
 
-  // TODO Update Element
   #endDateChangeHandler = ([userDate]) => {
-    this._setState({
+    this.updateElement({
       endTime: userDate
     });
   };

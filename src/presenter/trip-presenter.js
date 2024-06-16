@@ -63,8 +63,6 @@ export default class TripPresenter {
 
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#pointListComponent.element,
-      // destinations: this.destinations,
-      // offers: this.offers,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewPointDestroy,
     });
@@ -107,7 +105,6 @@ export default class TripPresenter {
     }
 
     this.#currentSortingOption = sortingOption;
-    // TODO
     this.#clearTrip();
     this.#renderTrip();
   };
@@ -201,7 +198,6 @@ export default class TripPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  // TODO
   #renderPointList(points, destinations, offers) {
     render(this.#pointListComponent, this.#tripPointsContainer);
 

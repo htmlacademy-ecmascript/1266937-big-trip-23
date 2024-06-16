@@ -55,6 +55,6 @@ export const NEW_POINT = {
   destination: '',
   startTime: new Date(),
   endTime: new Date(),
-  price: 0,
+  price: '',
   isFavorite: false,
 };
