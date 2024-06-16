@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {POINT_TYPES, TimeFormatDisplay} from '../constants.js';
+import {NEW_POINT, POINT_TYPES, TimeFormatDisplay} from '../constants.js';
 import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.js';
 import {humanizeEventDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
@@ -112,7 +112,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
   const currentDestination = destinations.find((destination) => destination.id === currentDestinationId) || {};
 
   const {
-    city,
+    city = '',
     description,
     pictures
   } = currentDestination;
@@ -160,7 +160,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               id="${id || 'event-destination-1'}"
               type="text" 
               name="event-destination"
-              value="${he.encode(city || '')}"
+              value="${he.encode(city)}"
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
@@ -233,7 +233,7 @@ export default class PointFormView extends AbstractStatefulView {
   #startDatePicker = null;
   #endDatePicker = null;
 
-  constructor({point, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
+  constructor({point = NEW_POINT, destinations, offers, onArrowUpClick, onFormSubmit, onDeleteButtonClick}) {
     super();
     this._setState(PointFormView.parsePointToState(point));
     this.#offers = offers;

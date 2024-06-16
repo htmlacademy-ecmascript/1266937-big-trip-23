@@ -14,12 +14,8 @@ export default class DestinationsModel extends Observable {
   }
 
   async init() {
-    try {
-      const destinations = await this.#pointsApiService.destinations;
-      this.#destinations = destinations.map(this.#adaptToClient);
-    } catch (err) {
-      this.#destinations = [];
-    }
+    const destinations = await this.#pointsApiService.destinations;
+    this.#destinations = destinations.map(this.#adaptToClient);
   }
 
   #adaptToClient(destination) {

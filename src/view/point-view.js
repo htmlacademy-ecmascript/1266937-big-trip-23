@@ -10,7 +10,7 @@ const createOfferListTemplate = (offers) => offers.map(({title, price}) => (
     <span class="event__offer-price">${price}</span>
   </li>`)).join('');
 
-const createPointViewTemplate = (point, offers, destinations) => {
+const createPointViewTemplate = (point, destinations, offers) => {
   const {
     type,
     startTime,
@@ -97,11 +97,11 @@ export default class PointView extends AbstractView {
   #handleArrowDownClick = null;
   #handleFavoriteButtonClick = null;
 
-  constructor({point, offers, destinations, onArrowDownClick, onFavoriteButtonClick}) {
+  constructor({point, destinations, offers, onArrowDownClick, onFavoriteButtonClick}) {
     super();
     this.#point = point;
-    this.#offers = offers;
     this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleArrowDownClick = onArrowDownClick;
     this.#handleFavoriteButtonClick = onFavoriteButtonClick;
 
@@ -113,7 +113,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointViewTemplate(this.#point, this.#offers, this.#destinations);
+    return createPointViewTemplate(this.#point, this.#destinations, this.#offers);
   }
 
   #arrowDownClickHandler = (evt) => {

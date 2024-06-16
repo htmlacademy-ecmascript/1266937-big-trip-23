@@ -15,11 +15,7 @@ export default class OffersModel extends Observable {
   }
 
   async init() {
-    try {
-      const offers = await this.#pointsApiService.offers;
-      this.#offers = offers;
-    } catch (err) {
-      this.#offers = [];
-    }
+    const offers = await this.#pointsApiService.offers;
+    this.#offers = offers;
   }
 }

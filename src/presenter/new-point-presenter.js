@@ -1,6 +1,6 @@
 import PointFormView from '../view/point-form-view';
 import {render, RenderPosition} from '../framework/render';
-import {UserAction, UpdateType, NEW_POINT} from '../constants';
+import {UserAction, UpdateType} from '../constants';
 import {remove} from '../framework/render';
 
 
@@ -8,9 +8,9 @@ export default class NewPointPresenter {
   #pointListContainer = null;
   #pointFormComponent = null;
 
+  #point = null;
   #destinations = null;
   #offers = null;
-  #point = NEW_POINT;
 
   #handleDataChange = null;
   #handleDestroy = null;
