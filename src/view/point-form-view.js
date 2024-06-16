@@ -102,6 +102,9 @@ const createPointFormTemplate = (point, destinations, offers) => {
     price,
     offers: currentOfferIds,
     id,
+    isSaving,
+    isDeleting,
+    isDisabled
   } = point;
 
   const availableOffers = offers.find((offer) => offer.type === type)?.offers || [];
@@ -199,8 +202,12 @@ const createPointFormTemplate = (point, destinations, offers) => {
             >
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+             ${isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -377,11 +384,18 @@ export default class PointFormView extends AbstractStatefulView {
 
     return {
       ...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
   static parseStateToPoint(state) {
     const point = {...state};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }
