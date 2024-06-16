@@ -132,21 +132,33 @@ export default class TripPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
     // Здесь будем вызывать обновление модели.
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
-        this.#pointsModel.updatePoint(updateType, update);
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
         this.#pointPresenters.get(update.id).setDeleting();
-        this.#pointsModel.deletePoint(updateType, update);
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#newPointPresenter.setSaving();
-        this.#pointsModel.addPoint(updateType, update);
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#newPointPresenter.setAborting();
+        }
         break;
     }
 

@@ -105,6 +105,23 @@ export default class PointPresenter {
     }
   };
 
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointFormComponent.shake(resetFormState);
+  }
+
   #replacePointToForm() {
     replace(this.#pointFormComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
