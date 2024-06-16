@@ -205,14 +205,16 @@ const createPointFormTemplate = (point, destinations, offers) => {
           <button class="event__save-btn  btn  btn--blue" type="submit">
             ${isSaving ? 'Saving...' : 'Save'}
           </button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
-             ${isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
+
+          ${point !== NEW_POINT ?
+      `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+            ${isDeleting ? 'Deleting...' : 'Delete'}
+          </button>` :
+      '<button class="event__reset-btn" type="reset">Cancel</button>'}
+
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
-
-          <!--<button class="event__reset-btn" type="reset">Cancel</button>-->
 
         </header>
         <section class="event__details">
@@ -290,6 +292,9 @@ export default class PointFormView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#deleteButtonClickHandler);
 
+    this.element.querySelector('.event__input--price')
+      .addEventListener('change', this.#priceChangeHandler);
+
     this.#setStartDatePicker();
     this.#setEndDatePicker();
   }
@@ -330,9 +335,19 @@ export default class PointFormView extends AbstractStatefulView {
 
     const currentDestination = this.#destinations.find((destination) => destination.city === evt.target.value);
 
-    this.updateElement(
-      {destination: currentDestination.id}
-    );
+    if (currentDestination) {
+      this.updateElement({
+        destination: currentDestination.id
+      });
+    }
+  };
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    this._setState({
+      price: Number(evt.target.value)
+    });
   };
 
   #deleteButtonClickHandler = (evt) => {

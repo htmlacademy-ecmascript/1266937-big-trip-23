@@ -63,8 +63,8 @@ export default class TripPresenter {
 
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#pointListComponent.element,
-      destinations: this.destinations,
-      offers: this.offers,
+      // destinations: this.destinations,
+      // offers: this.offers,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewPointDestroy,
     });
@@ -124,7 +124,7 @@ export default class TripPresenter {
   createNewPoint() {
     this.#currentSortingOption = SortingOption.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterOption.DEFAULT);
-    this.#newPointPresenter.init();
+    this.#newPointPresenter.init(this.destinations, this.offers);
   }
 
   #handleModeChange = () => {

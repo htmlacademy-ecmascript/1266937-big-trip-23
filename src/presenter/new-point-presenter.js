@@ -8,9 +8,8 @@ export default class NewPointPresenter {
   #pointListContainer = null;
   #pointFormComponent = null;
 
-  #point = null;
-  #destinations = null;
-  #offers = null;
+  #destinations = [];
+  #offers = [];
 
   #handleDataChange = null;
   #handleDestroy = null;
@@ -23,13 +22,14 @@ export default class NewPointPresenter {
     this.#handleDestroy = onDestroy;
   }
 
-  init() {
+  init(destinations, offers) {
+    this.#destinations = destinations;
+    this.#offers = offers;
     if (this.#pointFormComponent !== null) {
       return;
     }
 
     this.#pointFormComponent = new PointFormView({
-      point: this.#point,
       destinations: this.#destinations,
       offers: this.#offers,
       onFormSubmit: this.#handleFormSubmit,
