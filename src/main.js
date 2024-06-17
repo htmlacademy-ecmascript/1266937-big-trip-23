@@ -32,7 +32,6 @@ const pointsModel = new PointsModel({
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
-  tripInfoContainer: tripMainElement,
   tripPointsContainer: tripEventsElement,
   pointsModel,
   destinationsModel,

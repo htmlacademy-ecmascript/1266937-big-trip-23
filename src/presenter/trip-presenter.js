@@ -7,14 +7,12 @@ import {remove, render} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import TripInfoPresenter from './trip-info-presenter.js';
 import {SortingOption, UserAction, UpdateType, FilterOption, TimeLimit} from '../constants.js';
 import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
 import {filterByOptions} from '../utils/filter-utils.js';
 
 
 export default class TripPresenter {
-  #tripInfoContainer = null;
   #tripPointsContainer = null;
   #pointsModel = null;
   #destinationsModel = null;
@@ -28,7 +26,6 @@ export default class TripPresenter {
   #failedLoadComponent = null;
 
   #pointPresenters = new Map();
-  #tripInfoPresenter = null;
   #newPointPresenter = null;
 
   #currentSortingOption = SortingOption.DEFAULT;
@@ -40,24 +37,18 @@ export default class TripPresenter {
   });
 
   constructor({
-    tripInfoContainer,
     tripPointsContainer,
     pointsModel,
     destinationsModel,
     offersModel,
     filterModel,
     onNewPointDestroy}) {
-    this.#tripInfoContainer = tripInfoContainer;
     this.#tripPointsContainer = tripPointsContainer;
 
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
-
-    this.#tripInfoPresenter = new TripInfoPresenter({
-      tripInfoContainer: this.#tripInfoContainer
-    });
 
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#pointListComponent.element,
@@ -101,7 +92,6 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#renderTripInfo();
     this.#renderTrip();
   }
 
@@ -208,10 +198,6 @@ export default class TripPresenter {
     render(this.#pointListComponent, this.#tripPointsContainer);
 
     points.forEach((point) => this.#renderPoint(point, destinations, offers));
-  }
-
-  #renderTripInfo() {
-    this.#tripInfoPresenter.init();
   }
 
   #renderLoading() {
