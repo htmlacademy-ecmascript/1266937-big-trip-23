@@ -8,7 +8,7 @@ import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import {SortingOption, UserAction, UpdateType, FilterOption, TimeLimit} from '../constants.js';
-import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point.js';
+import {sortEventsByDate, sortEventsByDuration, sortEventsByPrice} from '../utils/point-utils.js';
 import {filterByOptions} from '../utils/filter-utils.js';
 
 
@@ -95,6 +95,12 @@ export default class TripPresenter {
     this.#renderTrip();
   }
 
+  createNewPoint() {
+    this.#currentSortingOption = SortingOption.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterOption.DEFAULT);
+    this.#newPointPresenter.init(this.destinations, this.offers);
+  }
+
   #handleSortingOptionChange = (sortingOption) => {
     if (this.#currentSortingOption === sortingOption) {
       return;
@@ -114,12 +120,6 @@ export default class TripPresenter {
     render(this.#sortingComponent, this.#tripPointsContainer);
   }
 
-  createNewPoint() {
-    this.#currentSortingOption = SortingOption.DEFAULT;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterOption.DEFAULT);
-    this.#newPointPresenter.init(this.destinations, this.offers);
-  }
-
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
@@ -127,7 +127,6 @@ export default class TripPresenter {
 
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
-    // Здесь будем вызывать обновление модели.
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
@@ -159,19 +158,15 @@ export default class TripPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список
         this.#clearTrip();
         this.#renderTrip();
         break;
       case UpdateType.MAJOR:
-        // - обновить весь маршрут
         this.#clearTrip({resetSortingOption: true});
         this.#renderTrip();
         break;
@@ -237,6 +232,9 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    const points = this.points;
+    const pointCount = points.length;
+
     if (this.#isLoading) {
       this.#renderLoading();
       return;
@@ -246,9 +244,6 @@ export default class TripPresenter {
       this.#renderFailedLoad();
       return;
     }
-
-    const points = this.points;
-    const pointCount = points.length;
 
     if (pointCount === 0) {
       this.#renderEmptyList();

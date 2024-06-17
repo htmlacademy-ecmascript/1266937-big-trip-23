@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeEventDate, getDuration} from '../utils/point.js';
+import {humanizeEventDate, getDuration} from '../utils/point-utils.js';
 import {TimeFormatDisplay} from '../constants.js';
 
 const createOfferListTemplate = (offers) => offers.map(({title, price}) => (

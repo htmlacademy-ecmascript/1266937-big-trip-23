@@ -8,7 +8,7 @@ const createNewPointButtonTemplate = () => (
   </button>`
 );
 
-export default class extends AbstractView {
+export default class NewPointButtonView extends AbstractView {
   #handleNewPointButtonClick = null;
 
   constructor({onNewPointButtonClick}) {

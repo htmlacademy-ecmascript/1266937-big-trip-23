@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import isBetween from 'dayjs/plugin/isBetween';
-import {getDifference} from './common';
+import {getDifference} from './common-utils';
 
 dayjs.extend(duration);
 dayjs.extend(isBetween);

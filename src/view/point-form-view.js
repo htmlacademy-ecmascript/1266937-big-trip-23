@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {NEW_POINT, POINT_TYPES, TimeFormatDisplay} from '../constants.js';
-import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common.js';
-import {humanizeEventDate} from '../utils/point.js';
+import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common-utils.js';
+import {humanizeEventDate} from '../utils/point-utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
