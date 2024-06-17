@@ -2,7 +2,6 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeEventDate, getDuration} from '../utils/point.js';
 import {TimeFormatDisplay} from '../constants.js';
 
-// selected offers
 const createOfferListTemplate = (offers) => offers.map(({title, price}) => (
   `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
@@ -36,7 +35,7 @@ const createPointViewTemplate = (point, destinations, offers) => {
           class="event__date"
           datetime=${startTime}
         >
-            ${humanizeEventDate(startTime, TimeFormatDisplay.DATE_FORMAT)}
+            ${humanizeEventDate(startTime, TimeFormatDisplay.DATE)}
         </time>
         <div class="event__type">
           <img
@@ -54,14 +53,14 @@ const createPointViewTemplate = (point, destinations, offers) => {
               class="event__start-time"
               datetime=${startTime}
             >
-              ${humanizeEventDate(startTime, TimeFormatDisplay.TIME_FORMAT)}
+              ${humanizeEventDate(startTime, TimeFormatDisplay.TIME)}
             </time>
             &mdash;
             <time
               class="event__end-time"
               datetime=${endTime}
             >
-              ${humanizeEventDate(endTime, TimeFormatDisplay.TIME_FORMAT)}
+              ${humanizeEventDate(endTime, TimeFormatDisplay.TIME)}
             </time>
           </p>
           <p class="event__duration">${getDuration(startTime, endTime)}</p>

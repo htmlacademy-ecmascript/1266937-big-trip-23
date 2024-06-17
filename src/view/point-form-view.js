@@ -14,12 +14,10 @@ const createPointTypeListTemplate = (types, activeType) => (
         class="event__type-input  visually-hidden"
         type="radio"
         name="event-type"
-        value=${type}
+        value="${type}"
         ${activeType === type ? 'checked' : ''}>
-      <label
-        class="event__type-label  event__type-label--${type}"
-        for="event-type-${type}-1">
-          ${capitalizeFirstLetter(type)}
+      <label class="event__type-label  event__type-label--${type}"
+        for="event-type-${type}-1">${capitalizeFirstLetter(type)}
       </label>
     </div>`)).join('')
 );
@@ -66,7 +64,7 @@ const createOfferSectionTemplate = (offers, currentOffers) => {
 };
 
 const createPictureListTemplate = (pictures) => (
-  pictures?.map((picture) => (
+  pictures.map((picture) => (
     `<img
       class="event__photo"
       src=${picture.src}
@@ -82,11 +80,11 @@ const createDestinationSectionTemplate = (description, pictures) => {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      <div class="event__photos-container">
+      ${pictures.length ? `<div class="event__photos-container">
         <div class="event__photos-tape">
           ${pictureListTemplate}
         </div>
-      </div>
+      </div>` : ''}
     </section>`);
 };
 
@@ -116,8 +114,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
   const pointTypeListTemplate = createPointTypeListTemplate(POINT_TYPES, type);
   const cityListTemplate = createCityListTemplate(destinations);
-  const offerSectionTemplate = createOfferSectionTemplate(availableOffers, currentOfferIds);
-  const destinationSectionTemplate = createDestinationSectionTemplate(description, pictures);
+  const offerSectionTemplate = availableOffers.length > 0 ? createOfferSectionTemplate(availableOffers, currentOfferIds) : '';
+  const destinationSectionTemplate = description || pictures?.length > 0 ? createDestinationSectionTemplate(description, pictures) : '';
 
   return (
     `<li class="trip-events__item">
@@ -147,12 +145,10 @@ const createPointFormTemplate = (point, destinations, offers) => {
           </div>
 
           <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for="${id || 'event-destination-1'}">
-              ${type}
-            </label>
+            <label class="event__label  event__type-output" for="event-destination-1">${type}</label>
             <input
               class="event__input  event__input--destination"
-              id="${id || 'event-destination-1'}"
+              id="event-destination-1"
               type="text" 
               name="event-destination"
               value="${he.encode(city)}"
@@ -211,8 +207,8 @@ const createPointFormTemplate = (point, destinations, offers) => {
 
         </header>
         <section class="event__details">
-          ${availableOffers.length > 0 ? offerSectionTemplate : ''}
-          ${description && pictures ? destinationSectionTemplate : ''}
+          ${offerSectionTemplate}
+          ${destinationSectionTemplate}
         </section >
       </form >
     </li >`
@@ -265,10 +261,11 @@ export default class PointFormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    // TODO
-    if (this.element.querySelector('.event__rollup-btn')) {
-      this.element.querySelector('.event__rollup-btn')
-        .addEventListener('click', this.#arrowUpClickHandler);
+    const rollupButtonElement = this.element.querySelector('.event__rollup-btn');
+    const availableOffersElement = this.element.querySelector('.event__available-offers');
+
+    if (rollupButtonElement) {
+      rollupButtonElement.addEventListener('click', this.#arrowUpClickHandler);
     }
 
     this.element.querySelector('.event--edit')
@@ -277,9 +274,8 @@ export default class PointFormView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
 
-    if (this.element.querySelector('.event__available-offers')) {
-      this.element.querySelector('.event__available-offers')
-        .addEventListener('change', this.#offerChangeHandler);
+    if (availableOffersElement) {
+      availableOffersElement.addEventListener('change', this.#offerChangeHandler);
     }
 
     this.element.querySelector('.event__input--destination')
@@ -309,19 +305,22 @@ export default class PointFormView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
+      offers: [],
     });
   };
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
 
+    let offers = [...this._state.offers];
+
     if (evt.target.checked) {
-      this._state.offers.push(evt.target.id);
+      offers.push(evt.target.id);
     } else {
-      this._state.offers = this._state.offers.filter((offer) => offer !== evt.target.id);
+      offers = this._state.offers.filter((offer) => offer !== evt.target.id);
     }
-    this._setState(
-      {offers: this._state.offers}
+    this.updateElement(
+      {offers}
     );
   };
 
@@ -366,7 +365,7 @@ export default class PointFormView extends AbstractStatefulView {
     this.#startDatePicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
+        dateFormat: TimeFormatDisplay.FLATPICKR_DATE_TIME,
         defaultDate: this._state.startTime,
         enableTime: true,
         'time_24hr': true,
@@ -379,7 +378,7 @@ export default class PointFormView extends AbstractStatefulView {
     this.#endDatePicker = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
+        dateFormat: TimeFormatDisplay.FLATPICKR_DATE_TIME,
         defaultDate: this._state.endTime,
         enableTime: true,
         'time_24hr': true,

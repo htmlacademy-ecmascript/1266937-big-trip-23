@@ -1,13 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {FilterOption} from '../constants';
-
-const EmptyListMessageOption = {
-  [FilterOption.DEFAULT]: 'Click New Event to create your first point',
-  [FilterOption.FUTURE]: 'There are no future events now',
-  [FilterOption.PRESENT]: 'There are no present events now',
-  [FilterOption.PAST]: 'There are no past events now',
-};
-
+import {EmptyListMessageOption} from '../constants';
 
 const createEmptyListTemplate = (filterOption) => {
   const EmptyListMessage = EmptyListMessageOption[filterOption];
