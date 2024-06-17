@@ -51,7 +51,7 @@ export const isPastEvent = (endTime) => (
 // sorting
 
 export const sortEventsByDate = (eventA, eventB) => (
-  dayjs(eventB.endTime).diff(dayjs(eventA.startTime))
+  dayjs(eventA.startTime).diff(dayjs(eventB.startTime))
 );
 
 export const sortEventsByDuration = (eventA, eventB) => (

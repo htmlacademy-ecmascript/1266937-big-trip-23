@@ -62,17 +62,19 @@ export default class TripPresenter {
 
   get points() {
     const filterOption = this.filter;
-    const points = this.#pointsModel.points.sort(sortEventsByDate);
+    const points = this.#pointsModel.points;
     const filteredPoints = filterByOptions[filterOption](points);
 
     switch (this.#currentSortingOption) {
+      case SortingOption.DEFAULT:
+        return filteredPoints.sort(sortEventsByDate);
       case SortingOption.TIME:
         return filteredPoints.sort(sortEventsByDuration);
       case SortingOption.PRICE:
         return filteredPoints.sort(sortEventsByPrice);
-      default:
-        return filteredPoints.sort(sortEventsByDate);
     }
+
+    return filteredPoints;
   }
 
   get destinations() {
