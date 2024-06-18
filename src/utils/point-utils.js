@@ -13,23 +13,21 @@ export const getEventDuration = (startTime, endTime) => {
   const MINUTES_IN_HOUR = 60;
   const SECONDS_IN_MINUTE = 60;
 
-  const durationInMs = dayjs(endTime).diff(dayjs(startTime));
+  const differenceInMs = dayjs(endTime).diff(dayjs(startTime));
+  const durationInMs = dayjs.duration(differenceInMs);
 
-  const hours = dayjs.duration(durationInMs).hours();
-  const minutes = dayjs.duration(durationInMs).minutes();
-  const days = Math.trunc(durationInMs / HOURS_IN_DAY / MINUTES_IN_HOUR / SECONDS_IN_MINUTE / 1000);
+  const hours = durationInMs.hours();
+  const minutes = durationInMs.minutes();
+  const days = Math.trunc(differenceInMs / HOURS_IN_DAY / MINUTES_IN_HOUR / SECONDS_IN_MINUTE / 1000);
 
   let formattedDuration;
 
   if (!days && !hours) {
-    formattedDuration = dayjs(durationInMs).format(TimeFormatDisplay.DURATION_MINUTES);
+    formattedDuration = dayjs.duration(differenceInMs).format(TimeFormatDisplay.DURATION_MINUTES);
   } else if (hours && !days) {
-    formattedDuration = dayjs(durationInMs).format(TimeFormatDisplay.DURATION_HOURS);
+    formattedDuration = dayjs.duration(differenceInMs).format(TimeFormatDisplay.DURATION_HOURS);
   } else {
-    formattedDuration =
-      `${days.toString().padStart(2, 0)}D 
-      ${hours.toString().padStart(2, 0)}H 
-      ${minutes.toString().padStart(2, 0)}M`;
+    formattedDuration = `${days.toString().padStart(2, 0)}D ${hours.toString().padStart(2, 0)}H ${minutes.toString().padStart(2, 0)}M`;
   }
 
   return formattedDuration;
