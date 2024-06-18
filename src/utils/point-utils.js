@@ -23,9 +23,9 @@ export const getEventDuration = (startTime, endTime) => {
   let formattedDuration;
 
   if (!days && !hours) {
-    formattedDuration = dayjs.duration(differenceInMs).format(TimeFormatDisplay.DURATION_MINUTES);
+    formattedDuration = durationInMs.format(TimeFormatDisplay.DURATION_MINUTES);
   } else if (hours && !days) {
-    formattedDuration = dayjs.duration(differenceInMs).format(TimeFormatDisplay.DURATION_HOURS);
+    formattedDuration = durationInMs.format(TimeFormatDisplay.DURATION_HOURS);
   } else {
     formattedDuration = `${days.toString().padStart(2, 0)}D ${hours.toString().padStart(2, 0)}H ${minutes.toString().padStart(2, 0)}M`;
   }
