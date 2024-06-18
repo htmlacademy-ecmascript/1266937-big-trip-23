@@ -1,5 +1,5 @@
 import {FilterOption} from '../constants';
-import {isFutureEvent, isPresentEvent, isPastEvent} from './point';
+import {isFutureEvent, isPresentEvent, isPastEvent} from './point-utils';
 
 export const filterByOptions = {
   [FilterOption.DEFAULT]: (points) => [...points],

@@ -7,30 +7,31 @@ import FilterModel from './model/filter-model.js';
 import newPointButtonView from './view/new-point-button-view.js';
 import {render} from './framework/render.js';
 import PointsApiService from './api-service/points-api-service.js';
-
-const AUTHORIZATION = 'Basic jT8fld32ld7qR31h';
-const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+import {AUTHORIZATION, END_POINT} from './constants.js';
 
 const tripMainElement = document.querySelector('.trip-main');
 const filterControlsElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
+
+const destinationsModel = new DestinationsModel({
+  pointsApiService: pointsApiService,
 });
 
 const offersModel = new OffersModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+  pointsApiService: pointsApiService,
 });
 
-const destinationsModel = new DestinationsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+const pointsModel = new PointsModel({
+  pointsApiService: pointsApiService,
+  destinationsModel,
+  offersModel,
 });
 
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
-  tripInfoContainer: tripMainElement,
   tripPointsContainer: tripEventsElement,
   pointsModel,
   destinationsModel,
@@ -60,9 +61,10 @@ function handleNewPointFormClose() {
 filterPresenter.init();
 tripPresenter.init();
 
-destinationsModel.init();
-offersModel.init();
 pointsModel.init()
   .finally(() => {
     render(newPointButtonComponent, tripMainElement);
+    if (pointsModel.isFailedLoad) {
+      newPointButtonComponent.element.disabled = true;
+    }
   });

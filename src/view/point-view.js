@@ -1,8 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeEventDate, getDuration} from '../utils/point.js';
+import {humanizeEventDate, getEventDuration} from '../utils/point-utils.js';
 import {TimeFormatDisplay} from '../constants.js';
 
-// selected offers
 const createOfferListTemplate = (offers) => offers.map(({title, price}) => (
   `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
@@ -10,7 +9,7 @@ const createOfferListTemplate = (offers) => offers.map(({title, price}) => (
     <span class="event__offer-price">${price}</span>
   </li>`)).join('');
 
-const createPointViewTemplate = (point, offers, destinations) => {
+const createPointViewTemplate = (point, destinations, offers) => {
   const {
     type,
     startTime,
@@ -36,7 +35,7 @@ const createPointViewTemplate = (point, offers, destinations) => {
           class="event__date"
           datetime=${startTime}
         >
-            ${humanizeEventDate(startTime, TimeFormatDisplay.DATE_FORMAT)}
+            ${humanizeEventDate(startTime, TimeFormatDisplay.DATE)}
         </time>
         <div class="event__type">
           <img
@@ -54,17 +53,17 @@ const createPointViewTemplate = (point, offers, destinations) => {
               class="event__start-time"
               datetime=${startTime}
             >
-              ${humanizeEventDate(startTime, TimeFormatDisplay.TIME_FORMAT)}
+              ${humanizeEventDate(startTime, TimeFormatDisplay.TIME)}
             </time>
             &mdash;
             <time
               class="event__end-time"
               datetime=${endTime}
             >
-              ${humanizeEventDate(endTime, TimeFormatDisplay.TIME_FORMAT)}
+              ${humanizeEventDate(endTime, TimeFormatDisplay.TIME)}
             </time>
           </p>
-          <p class="event__duration">${getDuration(startTime, endTime)}</p>
+          <p class="event__duration">${getEventDuration(startTime, endTime)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -97,11 +96,11 @@ export default class PointView extends AbstractView {
   #handleArrowDownClick = null;
   #handleFavoriteButtonClick = null;
 
-  constructor({point, offers, destinations, onArrowDownClick, onFavoriteButtonClick}) {
+  constructor({point, destinations, offers, onArrowDownClick, onFavoriteButtonClick}) {
     super();
     this.#point = point;
-    this.#offers = offers;
     this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleArrowDownClick = onArrowDownClick;
     this.#handleFavoriteButtonClick = onFavoriteButtonClick;
 
@@ -113,7 +112,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointViewTemplate(this.#point, this.#offers, this.#destinations);
+    return createPointViewTemplate(this.#point, this.#destinations, this.#offers);
   }
 
   #arrowDownClickHandler = (evt) => {

@@ -1,6 +1,6 @@
 import PointFormView from '../view/point-form-view';
 import {render, RenderPosition} from '../framework/render';
-import {UserAction, UpdateType, NEW_POINT} from '../constants';
+import {UserAction, UpdateType} from '../constants';
 import {remove} from '../framework/render';
 
 
@@ -8,32 +8,35 @@ export default class NewPointPresenter {
   #pointListContainer = null;
   #pointFormComponent = null;
 
-  #destinations = null;
-  #offers = null;
-  #point = NEW_POINT;
+  #destinations = [];
+  #offers = [];
 
   #handleDataChange = null;
   #handleDestroy = null;
+  #handleFormReset = null;
 
-  constructor({pointListContainer, destinations, offers, onDataChange, onDestroy}) {
+  constructor({pointListContainer, destinations, offers, onDataChange, onDestroy, onReset}) {
     this.#pointListContainer = pointListContainer;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+    this.#handleFormReset = onReset;
   }
 
-  init() {
+  init(destinations, offers) {
+    this.#destinations = destinations;
+    this.#offers = offers;
     if (this.#pointFormComponent !== null) {
       return;
     }
 
     this.#pointFormComponent = new PointFormView({
-      point: this.#point,
       destinations: this.#destinations,
       offers: this.#offers,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteButtonClick: this.#handleDeleteButtonClick,
+      onReset: this.#handleFormReset,
     });
 
     render(this.#pointFormComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
@@ -52,16 +55,34 @@ export default class NewPointPresenter {
     this.#pointFormComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleFormReset();
+  }
+
+  setSaving() {
+    this.#pointFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointFormComponent.shake(resetFormState);
   }
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {id: crypto.randomUUID(), ...point},
+      point,
     );
-
-    this.destroy();
   };
 
   #handleDeleteButtonClick = () => {

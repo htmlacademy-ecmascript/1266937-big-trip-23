@@ -31,7 +31,6 @@ export default class FilterView extends AbstractView {
   #currentFilterOption = null;
   #handleFilterOptionChange = null;
 
-
   constructor({filters, onFilterOptionChange, currentFilterOption}) {
     super();
     this.#filters = filters;
