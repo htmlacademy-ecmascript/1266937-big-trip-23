@@ -30,6 +30,8 @@ export const TimeFormatDisplay = {
   TIME: 'HH:mm',
   DATE_TIME: 'DD/MM/YY hh:mm',
   FLATPICKR_DATE_TIME: 'd/m/y H:i',
+  DURATION_HOURS: 'HH[h] mm[m]',
+  DURATION_MINUTES: 'mm[m]',
 };
 
 export const Mode = {

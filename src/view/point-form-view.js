@@ -166,7 +166,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${humanizeEventDate(startTime, TimeFormatDisplay.DATE_TIME_FORMAT)}"
+              value="${humanizeEventDate(startTime, TimeFormatDisplay.DATE_TIME)}"
             >
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -175,7 +175,7 @@ const createPointFormTemplate = (point, destinations, offers) => {
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME_FORMAT)}"
+              value="${humanizeEventDate(endTime, TimeFormatDisplay.DATE_TIME)}"
             >
           </div>
 

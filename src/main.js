@@ -64,4 +64,7 @@ tripPresenter.init();
 pointsModel.init()
   .finally(() => {
     render(newPointButtonComponent, tripMainElement);
+    if (pointsModel.isFailedLoad) {
+      newPointButtonComponent.element.disabled = true;
+    }
   });

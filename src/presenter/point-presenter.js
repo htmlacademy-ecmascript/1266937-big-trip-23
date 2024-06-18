@@ -7,10 +7,8 @@ export default class PointPresenter {
   #pointListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
-
   #pointComponent = null;
   #pointFormComponent = null;
-
   #point = null;
   #offers = [];
   #destinations = [];
@@ -97,14 +95,6 @@ export default class PointPresenter {
     }
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#pointFormComponent.reset(this.#point);
-      this.#replaceFormToPoint();
-    }
-  };
-
   setAborting() {
     if (this.#mode === Mode.DEFAULT) {
       this.#pointComponent.shake();
@@ -135,6 +125,14 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#pointFormComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
+  };
+
   #handleArrowDownClick = () => {
     this.#replacePointToForm();
   };
@@ -155,7 +153,6 @@ export default class PointPresenter {
   #handleFavoriteButtonClick = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      // TODO
       UpdateType.MINOR,
       {
         ...this.#point,
