@@ -1,7 +1,7 @@
-export const capitalizeFirstLetter = (string) => (
-  string[0].toUpperCase() + string.slice(1)
+export const capitalizeFirstLetter = (value) => (
+  value[0].toUpperCase() + value.slice(1)
 );
 
-export const getLastCharacterOfString = (string) => (
-  string.trim().split(' ').slice(-1)
+export const getLastCharacter = (value) => (
+  value.trim().split(' ').slice(-1)
 );

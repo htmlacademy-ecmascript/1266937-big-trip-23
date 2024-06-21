@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {NEW_POINT, POINT_TYPES, TimeFormatDisplay} from '../constants.js';
-import {capitalizeFirstLetter, getLastCharacterOfString} from '../utils/common-utils.js';
+import {capitalizeFirstLetter, getLastCharacter} from '../utils/common-utils.js';
 import {humanizeEventDate} from '../utils/point-utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -37,7 +37,7 @@ const createOfferListTemplate = (offers, currentOffers) => (
         class="event__offer-checkbox  visually-hidden"
         id="${offer.id}"
         type="checkbox"
-        name="event-offer-${getLastCharacterOfString(offer.title)}"
+        name="event-offer-${getLastCharacter(offer.title)}"
         ${isChecked ? 'checked' : ''}
       >
       <label

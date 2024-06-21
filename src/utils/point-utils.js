@@ -9,16 +9,13 @@ dayjs.extend(isBetween);
 export const humanizeEventDate = (date, format) => date ? dayjs(date).format(format) : '';
 
 export const getEventDuration = (startTime, endTime) => {
-  const HOURS_IN_DAY = 24;
-  const MINUTES_IN_HOUR = 60;
-  const SECONDS_IN_MINUTE = 60;
 
   const differenceInMs = dayjs(endTime).diff(dayjs(startTime));
   const durationInMs = dayjs.duration(differenceInMs);
 
   const hours = durationInMs.hours();
   const minutes = durationInMs.minutes();
-  const days = Math.trunc(differenceInMs / HOURS_IN_DAY / MINUTES_IN_HOUR / SECONDS_IN_MINUTE / 1000);
+  const days = Math.trunc(durationInMs.asDays());
 
   let formattedDuration;
 
